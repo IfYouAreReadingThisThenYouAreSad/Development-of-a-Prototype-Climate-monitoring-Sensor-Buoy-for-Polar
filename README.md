@@ -2,7 +2,7 @@
 ![Title Banner](https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/TitleBanner.png)
 
 
-# About
+# 1.0 About
 This project aims to develop a prototype climate-monitoring buoy optimised for polar regions. The system will autonomously measure and communicate key environmental parameters such as sea-ice thickness, temperature, salinity, and local imagery. It is intended for deployment in both ice and open water, operating with minimal energy and maintenance. 
 
   
@@ -21,9 +21,19 @@ The innovation of this project is to integrate a compact EMI thickness sensor wi
 
 The proposed system therefore advances current polar monitoring technologies by combining non-destructive EMI measurement, contextual imaging, and adaptive power management into a single, compact platform.  
 
-# Hardware Architecture 
+# 2.0 Hardware Architecture 
 
-This project will ru n off an STM32 microncontroller with extra perhicals and sensors. The hardware arcitrectures is split into five sub-systems where hardware is grouped based on simuliarity and hardware depencency with other hardware as show in Figure 1. the first subsytem is the STM32 and all the minor perhicals that goes with this such system such as a clock, UART , etc. The secound sub-system is Power, the power subsystems incleade solar pannels, batteries, boost converters and H-bridge circuit used to power the EMI sensor. The third sub-systems is commications , this included a HM-10 bluetooth module that was used in unsion with the microcontoller to replicate satelite commincations. It was thus easiser to uses bluetooth for protypoing of satalite from a time and cost stand point. The fourth sub-system is sensors which are catagorised intor extraeceptive sensors, optial extrasecptive sensors and interroreceptive sensors. The five sub-sytems which figure 1 doesnt go into much detail into is the data acquistions sub-sytems which will be used with the EMI sensors to captiure sea icea measuresments. A list of meterials and hardwares used in the Hardware Architecture and in the overall project can be found in section 4. 
+This project utilises an STM32 microcontroller, along with additional peripherals and sensors. The hardware architecture is divided into five subsystems, where hardware is grouped based on similarity and dependency on other components, as shown in Figure 1.
+
+The first sub-system is the STM32 and its associated peripherals, such as the clock, UART, and other minor components. The second sub-system is the power system, which includes solar panels, batteries, boost converters, and an H-bridge circuit used to power the EMI sensor.
+
+The third sub-system is communications, which includes an HM-10 Bluetooth module used in conjunction with the microcontroller to replicate satellite communications. Bluetooth was chosen for prototyping the satellite system due to time and cost constraints.
+
+The fourth subsystem is sensors, which are categorised into exteroceptive sensors, optical exteroceptive sensors, and interoceptive sensors.
+
+The fifth subsystem, which Figure 1 does not detail extensively/show, is the data acquisition system, which is used with the EMI sensors to capture sea ice measurements.
+
+A complete list of materials and hardware used in the hardware architecture and in the overall project can be found in Section 4.
 
 <p align="center">
   <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/Hardware%20Artitecture.png"
@@ -32,16 +42,37 @@ This project will ru n off an STM32 microncontroller with extra perhicals and se
 <p align="center">Figure 1 shows the Hardware Architecture of the Project</p>
 
 
+
+# 3.0 Software Architecture 
+
+This project was coded in C/C++ using the STM32 HAL library. The buoy operates using a simple main loop, as shown in Figure 3. A high-level abstraction of the code flow is as follows:
+
+When the buoy first wakes up, it performs a health check of its subsystems, including battery status and verification that all components are functioning correctly. During the same process, the buoy reads data from multiple sensors, such as the IMU and GPS, to determine whether it is on ice, water, or snow.
+
+Based on the results of these health and sensor checks, the buoy determines its current state (e.g., snow, ice, or water). It then assigns measurements to specific timers and enters a low-power sleep mode until one of the timers expires.
+
+When a timer expires, or when an external interrupt occurs (e.g., from a camera or data request), the buoy wakes up, performs the required measurement, checks for other timers that may have expired, and then returns to sleep if the main timer has not yet elapsed.
+
+<p align="center">
+  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/Software%20Architecture.png"
+    alt="Figure 2 shows the Software Architecture of the Project" width="900">
+</p>
+<p align="center">Figure 2 shows the Software Architecture of the Project</p>
+
+
+
+
+
 # References
 
-[1] IPCC, “Chapter 3: Polar regions,” Special Report on the Ocean and Cryosphere in a Changing Climate, 2022. [Online]. Available: https://www.ipcc.ch/srocc/chapter/chapter-3-2/ [2] NSIDC, “Arctic Weather and Climate,” National Snow and Ice Data Center, 2024. [Online]. Available: [nidc.org](https://nsidc.org/learn/parts-cryosphere/arctic-weather-and-climate)
+[1] IPCC, “Chapter 3: Polar regions,” Special Report on the Ocean and Cryosphere in a Changing Climate, 2022. [Online]. Available: https://www.ipcc.ch/srocc/chapter/chapter-3-2/ [2] NSIDC, “Arctic Weather and Climate,” National Snow and Ice Data Centre, 2024. [Online]. Available: [nidc.org](https://nsidc.org/learn/parts-cryosphere/arctic-weather-and-climate)
 
-[2] NSIDC, “Arctic Weather and Climate,” National Snow and Ice Data Center, 2024. [Online]. Available: [midc.org](https://nsidc.org/learn/parts-cryosphere/arctic-weather-and-climate)
+[2] NSIDC, “Arctic Weather and Climate,” National Snow and Ice Data Centre, 2024. [Online]. Available: [midc.org](https://nsidc.org/learn/parts-cryosphere/arctic-weather-and-climate)
 
 [3] J. A. Richter-Menge, D. K. Perovich, and C. Polashenski, “Ice mass-balance buoys: a tool for measuring and attributing changes in the thickness of the Arctic sea-ice cover,” Annals of Glaciology, vol. 44, pp. 205–210, 2006. [Online]. Available: [cambridge.ord](https://www.cambridge.org/core/journals/annals-of-glaciology/article/ice-massbalance-buoys-a-tool-for-measur ing-and-attributing-changes-in-the-thickness-of-the-arctic-seaice-cover/EA4A48431ECBC368D854C3AC400A0C47)
 
 [4] Kyocera, “Smart Buoy,” [Online]. Available: [global.kyocera.com](https://global.kyocera.com/we_love_engineers/series/trending-tech/smartbuoy.html)
 
-[5] Ocean Power Technologies, “PowerBuoy Products,” [Online]. Available: [oceanpowertechnologies.com](https://oceanpowertechnologies.com/products/powerbuoys/)
+[5] Ocean Power Technologies, “PowerBuoy Products,” [Online]. Available: [oceanpowertechnologies.com.com](https://oceanpowertechnologies.com/products/powerbuoys/)
 
 [6] IPCC, “Regional Fact Sheet: Polar regions,” AR6 WGI, 2021. [Online]. Available: [ipcc.ch](https://www.ipcc.ch/report/ar6/wg1/downloads/factsheets/IPCC_AR6_WGI_Regional_Fact_Sheet_Polar_regions.pdf)
