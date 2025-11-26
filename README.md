@@ -108,7 +108,8 @@ Below is information about the parts used in this project. Each link will take y
 
 [2] NSIDC, “Arctic Weather and Climate,” National Snow and Ice Data Centre, 2024. [Online]. Available: [midc.org](https://nsidc.org/learn/parts-cryosphere/arctic-weather-and-climate)
 
-[3] J. A. Richter-Menge, D. K. Perovich, and C. Polashenski, “Ice mass-balance buoys: a tool for measuring and attributing changes in the thickness of the Arctic sea-ice cover,” Annals of Glaciology, vol. 44, pp. 205–210, 2006. [Online]. Available: [cambridge.ord](https://www.cambridge.org/core/journals/annals-of-glaciology/article/ice-massbalance-buoys-a-tool-for-measur ing-and-attributing-changes-in-the-thickness-of-the-arctic-seaice-cover/EA4A48431ECBC368D854C3AC400A0C47)
+[3] J. A. Richter-Menge, D. K. Perovich, and C. Polashenski, “Ice mass-balance buoys: a tool for measuring and attributing changes in the thickness of the Arctic sea-ice cover,” Annals of Glaciology, vol. 44, pp. 205–210, 2006. [Online]. Available: [cambridge.org](https://www.cambridge.org/core/journals/annals-of-glaciology/article/ice-massbalance-buoys-a-tool-for-measuring-and-attributing-changes-in-the-thickness-of-the-arctic-seaice-cover/EA4A48431ECBC368D854C3AC400A0C47)
+
 
 [4] Kyocera, “Smart Buoy,” [Online]. Available: [global.kyocera.com](https://global.kyocera.com/we_love_engineers/series/trending-tech/smartbuoy.html)
 
