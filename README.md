@@ -25,8 +25,14 @@ The proposed system therefore advances current polar monitoring technologies by 
 
 This project will ru n off an STM32 microncontroller with extra perhicals and sensors. The hardware arcitrectures is split into five sub-systems where hardware is grouped based on simuliarity and hardware depencency with other hardware as show in Figure 1. the first subsytem is the STM32 and all the minor perhicals that goes with this such system such as a clock, UART , etc. The secound sub-system is Power, the power subsystems incleade solar pannels, batteries, boost converters and H-bridge circuit used to power the EMI sensor. The third sub-systems is commications , this included a HM-10 bluetooth module that was used in unsion with the microcontoller to replicate satelite commincations. It was thus easiser to uses bluetooth for protypoing of satalite from a time and cost stand point. The fourth sub-system is sensors which are catagorised intor extraeceptive sensors, optial extrasecptive sensors and interroreceptive sensors. The five sub-sytems which figure 1 doesnt go into much detail into is the data acquistions sub-sytems which will be used with the EMI sensors to captiure sea icea measuresments. A list of meterials and hardwares used in the Hardware Architecture and in the overall project can be found in section 4. 
 
+<p align="center">
 
-![Figure 1 shows the Hardware Architecture of the Project](https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/Hardware%20Artitecture.png}
+![Figure 1 shows the Hardware Architecture of the Project](https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/Hardware%20Artitecture.png)
+
+Figure 1 shows the Hardware Architecture of the Project
+</p>
+
+
 # References
 
 [1] IPCC, “Chapter 3: Polar regions,” Special Report on the Ocean and Cryosphere in a Changing Climate, 2022. [Online]. Available: https://www.ipcc.ch/srocc/chapter/chapter-3-2/ [2] NSIDC, “Arctic Weather and Climate,” National Snow and Ice Data Center, 2024. [Online]. Available: [nidc.org](https://nsidc.org/learn/parts-cryosphere/arctic-weather-and-climate)
