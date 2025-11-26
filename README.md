@@ -37,11 +37,11 @@ The fourth subsystem is sensors, which are categorised into exteroceptive sensor
 
 The fifth subsystem, which Figure 1 does not detail extensively/show, is the data acquisition system, which is used with the EMI sensors to capture sea ice measurements.
 
-A complete list of materials and hardware used in the hardware architecture and in the overall project can be found in Section 4.
+A complete list of materials and hardware used in the hardware architecture and in the overall project can be found in Section 5.
 
 <p align="center">
   <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/Hardware%20Artitecture.png"
-    alt="Figure 1 shows the Hardware Architecture of the Project" width="900">
+    alt="Figure 1 shows the Hardware Architecture of the Project" width="1100">
 </p>
 <p align="center">Figure 1 shows the Hardware Architecture of the Project</p>
 
@@ -59,11 +59,33 @@ When a timer expires, or when an external interrupt occurs (e.g., from a camera 
 
 <p align="center">
   <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/Software%20Architecture.png"
-    alt="Figure 2 shows the Software Architecture of the Project" width="900">
+    alt="Figure 2 shows the Software Architecture of the Project" width="1100">
 </p>
 <p align="center">Figure 2 shows the Software Architecture of the Project</p>
 
 
+# 4.0 Users' Guide to Repository
+
+This repository is organised into multiple folders, each corresponding to a specific sensor, hardware module, or subsystem. Code for each module is developed, compiled, and tested independently within its respective folder.
+
+Once each module is verified, the code is integrated into a single project that combines all sensors, hardware components, and subsystems into a fully functioning system.
+
+The repository structure is designed to make it easier for external users to:
+
+-Understand how each module works individually
+
+-Navigate to specific hardware or sensor code
+
+-Contribute or modify code for individual subsystems without affecting the entire project
+
+A brief overview of the folder structure and contents is provided below in Figure 3:
+
+
+<p align="center">
+  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/FilePathFigure.png"
+    alt="Figure 3 shows the navigation of the repository" width="900">
+</p>
+<p align="center">Figure 3 shows the navigation of the repository</p>
 
 
 
