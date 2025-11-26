@@ -89,7 +89,20 @@ A brief overview of the folder structure and contents is provided below in Figur
 
 
 
-# References
+# 5.0 Part Information
+
+Below is information about the parts used in this project. Each link will take you to the website where the part was acquired. From there, you can access the datasheet and other relevant specifications.
+
+
+
++ 
++
++ Part list is under construction
++
++
+
+
+# 6.0 References
 
 [1] IPCC, “Chapter 3: Polar regions,” Special Report on the Ocean and Cryosphere in a Changing Climate, 2022. [Online]. Available: https://www.ipcc.ch/srocc/chapter/chapter-3-2/ [2] NSIDC, “Arctic Weather and Climate,” National Snow and Ice Data Centre, 2024. [Online]. Available: [nidc.org](https://nsidc.org/learn/parts-cryosphere/arctic-weather-and-climate)
 
