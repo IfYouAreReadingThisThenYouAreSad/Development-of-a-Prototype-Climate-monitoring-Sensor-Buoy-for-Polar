@@ -1,7 +1,7 @@
 ![Title Banner](https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/TitleBanner.png)
 
 ![Build Status](https://img.shields.io/github/workflow/status/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/CI)
-![License](https://img.shields.io/github/license/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar)
+[![University of Manchester](https://img.shields.io/badge/University-of_Manchester-blue)](https://www.manchester.ac.uk)
 ![Version](https://img.shields.io/github/v/release/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar)
 ![Last Commit](https://img.shields.io/github/last-commit/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar)
 
