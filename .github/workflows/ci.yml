@@ -1,0 +1,35 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout your repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Install ARM GCC toolchain
+      - name: Install ARM GCC
+        run: |
+          sudo apt update
+          sudo apt install -y gcc-arm-none-eabi make
+
+      # Step 3: Build camera module
+      - name: Build Camera Module
+        run: |
+          cd camera
+          make
+
+      # Step 4: Build temperature sensor module
+      - name: Build Temperature Sensor Module
+        run: |
+          cd ../temperature_sensor
+          make
+
+      # Step 5: Build main project
+      - name: Build Main Project
+        run: |
+          cd ..
+          make
