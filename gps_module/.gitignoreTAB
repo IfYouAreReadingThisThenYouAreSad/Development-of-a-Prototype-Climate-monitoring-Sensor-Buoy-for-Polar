@@ -1,0 +1,12 @@
+# STM32CubeIDE build/debug files
+Debug/
+*.o
+*.d
+*.su
+*.elf
+*.map
+*.list
+*.launch
+*.ioc.user
+*.bak
+
