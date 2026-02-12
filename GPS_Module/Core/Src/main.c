@@ -52,8 +52,11 @@ void SystemClock_Config(void);
 
 uint8_t GPS_OFF(void);
 uint8_t GPS_ON(void);
-uint8_t getGPS_NMEA(void);
-void DecodeGPS(void);
+uint8_t getNMEA(void);
+void DecodeNMEA(void);
+void paraphase(void);
+uint8_t checksum(void);
+uint8_t HexToDec(char hexValue);
 
 /* USER CODE END PFP */
 
@@ -62,6 +65,15 @@ void DecodeGPS(void);
 volatile uint8_t GPS_Buf[100];
 volatile uint8_t GPS_index =0;
 char* GPS_token[10];
+
+/*char time[10];
+char postition[4][10];
+char data[10];
+char speedKnots[10];
+char course[10];
+
+char speedKmh[10];
+char altitude[10]; */
 
 /* USER CODE END 0 */
 
@@ -109,7 +121,7 @@ int main(void)
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
 
 
-	GPS_ON();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -117,28 +129,18 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  uint8_t idx =0;
+
     /* USER CODE BEGIN 3 */
-	  while(strncmp(GPS_token[0],"$CDACK", 6) ==0 || idx < 5){
-	  if(getGPS_NMEA() != 0){
-		  	  char token[10][20];//using this to see into GPS_token with debugger
-	  		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET); //debugging
-	  		  GPS_token[0] = strtok((char*)GPS_Buf,","); //the (char*) tells the compliler to shut the fuck up
-	  		  strncpy(token[0], GPS_token[0], 19);
-	  		  token[0][19] = '\0';
-	  		  for(uint8_t i =0; i < 5 ; i++){
-	  			  GPS_token[i+1] = strtok(NULL,","); //this with with line 121 splits the buffer 6 times for parphasing
-	  			  strncpy(token[i+1], GPS_token[i+1], 19);
-	  			  token[i+1][19] = '\0';
-	  		  }
-	  		  idx++;
+	  GPS_ON();
+	  getNMEA();
+	  if(checksum()){
+		  paraphase();
+		  DecodeNMEA();
+	  }
 
 
-	  		   // allow me to check variable in debug
 
 
-	  }}
-		DecodeGPS();
 		//while(1){HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);}
 	 // while(1){HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);}
   /* USER CODE END 3 */
@@ -200,34 +202,49 @@ uint8_t GPS_ON(void){
 	return 1;
 }
 
-uint8_t getGPS_NMEA(void){
+uint8_t getNMEA(void){
 
+	GPS_index = 0;
+	uint8_t GPS_char = '\0';
 	static uint8_t buffer[100]; // buffer & index are here becuase i cannot see
 	static uint8_t index = 0; // GPS_Buf or gpsIndex in debugger, hence using these for debugging
 
-	uint8_t GPS_char;
 	HAL_StatusTypeDef GPS_status = HAL_UART_Receive(&huart1, &GPS_char, 1, 100);
-
-	  if(HAL_OK == GPS_status){
-		  buffer[index] = GPS_char;
+	if(HAL_OK == GPS_status && GPS_char == '$'){
+		  buffer[GPS_index] = GPS_char;
 		  HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
-		  GPS_Buf[index] = buffer[index];
-		  index++;
+		  GPS_Buf[GPS_index] = buffer[GPS_index];
+		  GPS_index++;
 		  HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
-		  if (GPS_char == '\n'){
-			  buffer[index] = '\0';
-			  GPS_Buf[index] = buffer[index];
-		  	  index = 0;
-		  	  return 1;}}
-	  if(index >= sizeof(buffer) -1 ){ // stops buffer overflow, resets index counter
+		while(GPS_char != '\n'){
 
-		  index = 0;
-	  }
-	  return 0;
+
+			//uint8_t GPS_char;
+			HAL_StatusTypeDef GPS_status = HAL_UART_Receive(&huart1, &GPS_char, 1, 100);
+
+			  if(HAL_OK == GPS_status){
+				  buffer[GPS_index] = GPS_char;
+				  HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
+				  GPS_Buf[GPS_index] = buffer[GPS_index];
+				  GPS_index++;
+				  HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
+				  if (GPS_char == '\n'){
+					  buffer[GPS_index] = '\0';
+					  GPS_Buf[GPS_index] = buffer[GPS_index];
+
+					  return 1;}}
+			  if(GPS_index >= sizeof(buffer) -1 ){ // stops buffer overflow, resets index counter
+
+				  GPS_index = 0;
+				  return 0;;
+			  }
+
+		}}
+	return 0;
 }
 
 
-void DecodeGPS(void){
+void DecodeNMEA(void){
 
 	char time[10];
 	char postition[4][10];
@@ -236,8 +253,9 @@ void DecodeGPS(void){
 	char course[10];
 
 	char speedKmh[10];
-	char altitude[10];
+	char altitude[10];  // for debugging
 
+	//-------------------------------$GPRMC------------------------------------------//
 	if(strncmp(GPS_token[0], "$GPRMC", 6) == 0 && strncmp(GPS_token[2], "A", 1) == 0){
 
 
@@ -256,6 +274,7 @@ void DecodeGPS(void){
 		}
 		//while(1){HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);}
 	}
+	//-------------------------------$GPGGA------------------------------------------//
 	else if(strncmp(GPS_token[0], "$GPGGA", 6) == 0 && GPS_token[6][0] != '0'){
 		strncpy(time, GPS_token[1], 9);
 		time[9] = '\0';
@@ -271,6 +290,7 @@ void DecodeGPS(void){
 
 
 	}
+	//-------------------------------$GPVTG------------------------------------------//
 	else if(strncmp(GPS_token[0], "$GPVTG",6) == 0){
 
 		strncpy(speedKmh,GPS_token[7], 9);
@@ -278,14 +298,65 @@ void DecodeGPS(void){
 		/* note can added things to record bearing angles*/
 		//while(1){HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);}
 	}
+	//-------------------------------$GPGSA------------------------------------------//
 	else if(strncmp(GPS_token[0], "$GPGSA", 6) == 0){
 
 		/* mainly going to be used to see if the gps should keep trying to get posiston*/
 		if(GPS_token[2][0] == '0'){
-			GPS_OFF();//used to turn of gps if there is no satalines in sight
+			//GPS_OFF();//used to turn of gps if there is no satalines in sight
 		}
 		//while(1){HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);}
 	}
+
+
+}
+
+
+void paraphase(void){
+
+
+
+	  char token[11][20];//using this to see into GPS_token with debugger
+	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET); //debugging
+	  GPS_token[0] = strtok((char*)GPS_Buf,","); //the (char*) tells the compliler to shut the fuck up
+	  strncpy(token[0], GPS_token[0], 19);
+	  token[0][19] = '\0';
+	  for(uint8_t i =1; i < 10 ; i++){
+		  GPS_token[i] = strtok(NULL,","); //this with with line 121 splits the buffer 6 times for parphasing
+		  strncpy(token[i], GPS_token[i], 19);
+		  token[i][19] = '\0';
+		  if(GPS_token[i] == NULL) return;
+	  }
+
+
+
+
+
+}
+
+
+
+uint8_t checksum(void){
+
+	uint8_t idx = 1; // since buffer [0] will have $
+	uint8_t checksumValue = 0;
+	uint8_t GPSchecksumValue;
+	while(GPS_Buf[idx] != '*' && idx <= GPS_index){ //the extra && protect from overflow
+
+
+		checksumValue ^= GPS_Buf[idx++]; // doing XOR along the NMEA and then increasing idx
+
+
+
+	}
+
+	GPSchecksumValue = HexToDec(GPS_Buf[idx+1])*16 + HexToDec(GPS_Buf[idx+2]);
+
+
+	if(checksumValue == GPSchecksumValue) return 1; // return 1 if data is not currupt
+
+	return 0; // returns 0 if data is currupt
+
 
 
 
@@ -294,6 +365,62 @@ void DecodeGPS(void){
 
 }
 
+uint8_t HexToDec(char hexValue){
+
+
+	switch(hexValue){
+
+
+	case('F'):
+			return 15;
+	case('E'):
+			return 14;
+	case('D'):
+			return 13;
+	case('C'):
+			return 12;
+	case('B'):
+			return 11;
+	case('A'):
+			return 10;
+	case('9'):
+			return 9;
+	case('8'):
+			return 8;
+	case('7'):
+			return 7;
+	case('6'):
+			return 6;
+	case('5'):
+			return 5;
+	case('4'):
+			return 4;
+	case('3'):
+			return 3;
+	case('2'):
+			return 2;
+	case('1'):
+			return 1;
+	case('0'):
+			return 0;
+
+
+	default:
+		return 16; //invalid
+
+
+
+
+	}
+
+
+
+
+
+
+
+
+}
 
 
 
