@@ -58,7 +58,7 @@
 
 
 
-#define MAX_IMAGE_SIZE 60000
+#define MAX_IMAGE_SIZE 10000
 
 /* USER CODE END PD */
 
@@ -99,14 +99,18 @@ uint8_t read_fifo(void);
 
 uint8_t BurstRead(uint8_t* imageBuf);
 
+uint8_t Upload_OV2640_Settings2(void); // yes im creative
+uint8_t BurstRead2(uint8_t* imageBuf);
+uint8_t ReadFifoRegByReg(uint8_t* imageBuf);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
 uint8_t FailUpload = 0;
+//static uint8_t imageBuf[20000];
 
-
-static   uint8_t imageBuf[MAX_IMAGE_SIZE];
+//static   uint8_t imageBuf[MAX_IMAGE_SIZE];
 
 
 /* USER CODE END 0 */
@@ -151,20 +155,68 @@ int main(void)
 	OV2640_JPEG
 	OV2640_176x144_JPEG */
 
-  CS_Low();
-  if(Upload_OV2640_Settings()){
+  //uint8_t pass = 0;
+
+  //CS_Low();
+  //clear_fifo_flag();
+  if(Upload_OV2640_Settings2()){
 
 	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
 	  HAL_Delay(500);
 	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
   }
-  capture();
+
+  /*
+  if(VerifySettings(OV2640_JPEG_INIT)){
+	  pass++;
+  }
+  if(VerifySettings(OV2640_JPEG)){
+	  pass++;
+  }
+  if(VerifySettings(OV2640_160x120_JPEG)){
+	  pass++;
+  }
+	*/
+  uint8_t test1 = ArducamRead(ARDUCHIP_TRIG);
+  uint8_t test2 = ArducamRead(FIFO_SIZE1);
+  uint8_t test3 = ArducamRead(FIFO_SIZE2);
+  uint8_t test4 = ArducamRead(FIFO_SIZE3);
+
+  uint8_t test5 = ArducamRead(0x00);
 
 
-  //uint8_t imageBuf[MAX_IMAGE_SIZE];
-  BurstRead(imageBuf);
 
+  HAL_Delay(5);
+  if(capture()){
+
+	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+	  HAL_Delay(500);
+	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+
+
+  }
+
+
+  uint8_t imageBuf[MAX_IMAGE_SIZE];
+
+  uint32_t lengthlenfth = read_fifo_length(); //959808 settings 2 153608 settings 1
+  //BurstRead(imageBuf);
+
+
+  while(!BurstRead2(imageBuf)){
+	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+  }
+  //uint8_t ReadFifoRegByReg(imageBuf);
+ // CS_High();
 HAL_Delay(500);
+
+	uint8_t debuger[5];
+
+	for(uint8_t i = 0; i < 5 ;i++){
+
+		debuger[i] =imageBuf[i];
+
+	}
 
 
 
@@ -233,6 +285,10 @@ void SystemClock_Config(void)
 uint8_t WriteOV2640(uint8_t reg, uint8_t val){ // mainly used to shit a bunch of shit(seetings) onto OV2640
 
 
+	uint8_t temp_reg = reg;
+	uint8_t temp_val = val;
+
+
 	HAL_StatusTypeDef I2C_status = HAL_I2C_Mem_Write(&hi2c1,OV2640_ADDR, reg,I2C_MEMADD_SIZE_8BIT, &val, 1, HAL_MAX_DELAY);
 
 	if(HAL_OK == I2C_status) return 1;
@@ -247,7 +303,8 @@ uint8_t WriteOV2640(uint8_t reg, uint8_t val){ // mainly used to shit a bunch of
 
 uint8_t ReadOV2640(uint8_t reg, uint8_t* val){// YEAH this doesnt fucking work
 
-	uint8_t temp =0;
+	uint8_t temp_val =0;
+	uint8_t temp_reg = reg;
 
 
 
@@ -258,7 +315,7 @@ uint8_t ReadOV2640(uint8_t reg, uint8_t* val){// YEAH this doesnt fucking work
 	HAL_StatusTypeDef I2C_status2 = HAL_I2C_Master_Receive(&hi2c1, (0x30 << 1) | 0x01, val, 1, HAL_MAX_DELAY);
     if (I2C_status2 != HAL_OK) return 0; // fail
 
-    temp = *val;
+    temp_val = *val;
 
 	return 1;
 
@@ -286,14 +343,26 @@ uint8_t Uploading(const sensor_reg* Set_Val){ // uploads a setting
 
 uint8_t Upload_OV2640_Settings(void){ // uploads all the settings at once piggies back off Uploading()
 
+	CS_Low();
 
 
-	if(!Uploading(OV2640_JPEG_INIT)){FailUpload++; return 0;}
-	if(!Uploading(OV2640_YUV422)) {FailUpload++; return 0;}
-	if(!Uploading(OV2640_JPEG)) {FailUpload++; return 0;}
-	if(!Uploading(OV2640_176x144_JPEG)) {FailUpload++; return 0;}
+	if(!Uploading(OV2640_reset)){FailUpload++; return 0;}
+
+
+
+	//if(!Uploading(OV2640_JPEG_INIT)){FailUpload++; return 0;}
+	//if(!Uploading(OV2640_YUV422)) {FailUpload++; return 0;}
+
+	if(!Uploading(OV2640_QVGA)){FailUpload++; return 0;}
+
+	//if(!Uploading(OV2640_JPEG)) {FailUpload++; return 0;}
+	/*if(!Uploading(OV2640_160x120_JPEG)) {FailUpload++; return 0;} */
+
+
+
 
 	//FailUploaded global variable, tells me which setting failed to upload, will do something later with it
+	CS_High();
 
 	return 1;
 
@@ -374,6 +443,7 @@ uint8_t ArducamWrite(uint8_t reg, uint8_t val){
 }
 uint8_t ArducamRead(uint8_t reg)
 {
+	//CS_Low();
     uint8_t tx[2];
     uint8_t rx[2];
 
@@ -381,7 +451,7 @@ uint8_t ArducamRead(uint8_t reg)
     tx[1] = 0x00;        // dummy byte
 
     CS_Low();
-    HAL_StatusTypeDef SPI_status = HAL_SPI_TransmitReceive(&hspi1, tx, rx, 2, HAL_MAX_DELAY);
+    HAL_SPI_TransmitReceive(&hspi1, tx, rx, 2, HAL_MAX_DELAY);
     CS_High();
 
     return rx[1];  // second byte is the register value
@@ -394,15 +464,41 @@ uint8_t flush_fifo(void){
 }
 uint8_t capture(void){
 
+	uint8_t trig = ArducamRead(ARDUCHIP_TRIG);
 
-	uint8_t checker = 0;
-	checker += flush_fifo();
-	checker += clear_fifo_flag();
-	checker += ArducamWrite(ARDUCHIP_FIFO, FIFO_START_MASK);
+	flush_fifo();
+	//HAL_Delay(5);
+	clear_fifo_flag();
 
-	while (!(ArducamRead(ARDUCHIP_TRIG) & CAP_DONE_MASK));
 
-	return checker;
+
+	trig = ArducamRead(ARDUCHIP_TRIG);
+	HAL_Delay(5);
+
+
+	//HAL_Delay(5);
+	ArducamWrite(ARDUCHIP_FIFO, FIFO_START_MASK);
+
+
+	HAL_Delay(100);
+
+
+
+	trig = ArducamRead(ARDUCHIP_TRIG);
+
+
+	while (!(ArducamRead(ARDUCHIP_TRIG) & CAP_DONE_MASK)){
+
+
+		  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+
+	}
+
+
+
+
+
+	return 1;
 
 }
 uint8_t clear_fifo_flag(void){
@@ -412,11 +508,13 @@ uint8_t clear_fifo_flag(void){
 
 uint32_t read_fifo_length(void)
 {
+
 	uint32_t len1,len2,len3,length=0;
 	len1 = ArducamRead(FIFO_SIZE1);
   len2 = ArducamRead(FIFO_SIZE2);
   len3 = ArducamRead(FIFO_SIZE3) & 0x7f;
   length = ((len3 << 16) | (len2 << 8) | len1) & 0x07fffff;
+
 	return length;
 }
 uint8_t read_fifo(void)
@@ -427,15 +525,23 @@ uint8_t read_fifo(void)
 }
 uint8_t BurstRead(uint8_t* imageBuf){
 
-	uint32_t imagelength = read_fifo_length();
-	CS_Low();
 
-	if(imagelength > MAX_IMAGE_SIZE || imagelength == 0){
-		CS_High();
-		return 0; //failed to read
+	uint32_t imagelength = read_fifo_length();
+
+
+
+
+	if(imagelength > MAX_IMAGE_SIZE){
+		//CS_High();
+		//eturn 0; //failed to read
+		imagelength = MAX_IMAGE_SIZE;
+	}
+	if(imagelength == 0){
+
+		return 0;
 	}
 	uint8_t Burst = BURST_FIFO_READ;
-
+	CS_Low();
 	HAL_SPI_Transmit(&hspi1, &Burst, 1, HAL_MAX_DELAY);
 
 
@@ -446,6 +552,104 @@ uint8_t BurstRead(uint8_t* imageBuf){
 	return 1;
 }
 
+uint8_t BurstRead2(uint8_t* imageBuf)
+{
+
+    uint32_t imagelength = read_fifo_length();
+
+
+
+    if (imagelength == 0 || imagelength > MAX_IMAGE_SIZE)
+    {
+        //CS_High();
+        //return 0;
+		imagelength = MAX_IMAGE_SIZE;
+    }
+	if(imagelength == 0){
+
+		return 0;
+	}
+
+    uint8_t cmd = BURST_FIFO_READ;
+    CS_Low();
+    HAL_SPI_Transmit(&hspi1, &cmd, 1, HAL_MAX_DELAY);
+
+    for(uint32_t i = 0; i < imagelength; i++)
+    {
+        uint8_t dummy = 0x00;
+        HAL_SPI_TransmitReceive(&hspi1, &dummy, &imageBuf[i], 1, HAL_MAX_DELAY);
+    }
+
+    CS_High();
+    return 1;
+}
+
+
+
+
+uint8_t ReadFifoRegByReg(uint8_t* imageBuf)
+{
+
+
+    uint32_t imagelength = read_fifo_length();
+	CS_Low();
+
+
+    uint32_t index = 0;
+    if (imagelength == 0 || imagelength > MAX_IMAGE_SIZE)
+    {
+        //CS_High();
+        //return 0;
+		imagelength = MAX_IMAGE_SIZE;
+    }
+	if(imagelength == 0){
+
+		return 0;
+	}
+
+
+
+    for(;index < imagelength; index++){
+
+
+    	imageBuf[read_fifo()];
+
+    }
+
+
+
+
+    return 1; // success
+}
+
+
+
+
+uint8_t Upload_OV2640_Settings2(void){ // its getting coooked ahhhhhhh goofy
+
+	if(!Uploading(OV2640_reset)){FailUpload++; return 0;}
+
+
+	if(!Uploading(OV2640_JPEG_INIT)){FailUpload++; return 0;}
+
+	//if(!Uploading(OV2640_YUV422)){FailUpload++; return 0;}
+
+	if(!Uploading(OV2640_JPEG)){FailUpload++; return 0;}
+
+	//if(!Uploading(OV2640_bankswitch)){FailUpload++; return 0;}
+	if(!Uploading(OV2640_160x120_JPEG)){FailUpload++; return 0;}
+
+// i think im starting to hear voices
+
+
+
+	return 1;
+
+
+
+
+
+}
 
 /* USER CODE END 4 */
 

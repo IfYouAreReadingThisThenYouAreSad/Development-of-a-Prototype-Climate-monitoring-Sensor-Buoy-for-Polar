@@ -7,6 +7,21 @@
 
 #include "ov2640_regsV2.h"
 
+const sensor_reg OV2640_reset[] =
+{
+{0xff, 0x01},
+{0x12, 0x80},
+
+};
+
+const sensor_reg OV2640_bankswitch[] = // i have no idea what this does but it seemed important in the git hub
+{
+	  //  {0xff, 0x01}, // sensor bank
+	   // {0x15, 0x00}, // dsp bank
+		//{0xFF, 0x00},
+
+};
+
 const  sensor_reg OV2640_QVGA[]  =
 {
 	{0xff, 0x0},
