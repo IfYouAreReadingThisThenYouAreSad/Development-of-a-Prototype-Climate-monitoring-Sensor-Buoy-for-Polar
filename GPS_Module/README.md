@@ -25,10 +25,11 @@ The code follows a simple sturcture which does not need more explaining then the
 
 <p align="center">
   <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/GPS_Module/GPS%20Flow%20diagam.jpeg"
-    alt="Figure 1 shows the GPS code structure" width="900">
+    alt="Figure 1 shows the GPS code structure" width="400">
 </p>
 <p align="center">Figure 1 shows the GPS code structure</p>
 
 note that each block in Figure 1 is a function (see gps.h and example code for more detail). Thus multiple functions will have to be called
  to obtain the GPS information which is stored in a globle varaible.
+
 
