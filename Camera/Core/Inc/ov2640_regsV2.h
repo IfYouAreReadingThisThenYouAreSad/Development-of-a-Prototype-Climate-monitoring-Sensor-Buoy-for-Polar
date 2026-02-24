@@ -37,6 +37,7 @@ extern const sensor_reg OV2640_1280x1024_JPEG[];
 extern const sensor_reg OV2640_1600x1200_JPEG[];
 extern const sensor_reg OV2640_reset[];
 extern const sensor_reg OV2640_bankswitch[];
+extern const sensor_reg OV2640_RAW_QVGA[];
 
 
 

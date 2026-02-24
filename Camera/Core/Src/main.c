@@ -26,6 +26,8 @@
 /* USER CODE BEGIN Includes */
 
 #include "ov2640_regsV2.h"
+#include <math.h>
+#include "tjpgd.h"
 
 
 /* USER CODE END Includes */
@@ -60,6 +62,20 @@
 
 #define MAX_IMAGE_SIZE 10000
 
+
+
+//image processing defines
+#define IMAGE_WIDTH  160
+#define IMAGE_HEIGHT 120
+
+
+uint8_t greyimageBuffer[IMAGE_WIDTH * IMAGE_HEIGHT];
+uint8_t workBuffer[3100]; // must be big enough for IDCT work
+uint8_t jpegData[MAX_IMAGE_SIZE];  // big enough for your JPEG
+size_t jpegSize = 0;        // actual length of JPEG in bytes
+
+JDEC jdec;  // decoder object
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -78,15 +94,17 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
 
-
+//-----I2C commincations to the OV2640 Sensor on Arducam
 uint8_t WriteOV2640(uint8_t reg, uint8_t val);
 uint8_t ReadOV2640(uint8_t reg, uint8_t* value);
 uint8_t Uploading(const sensor_reg* Set_Val);
 uint8_t Upload_OV2640_Settings(void);
-void CS_High(void);
-void CS_Low(void);
 uint8_t VerifySettings(const sensor_reg* Set_Val);
 
+
+//--------SPI communication to Fifo Buffer on Arducam
+void CS_High(void);
+void CS_Low(void);
 uint8_t ArducamWrite(uint8_t reg, uint8_t val);
 uint8_t ArducamRead(uint8_t reg);
 
@@ -102,6 +120,21 @@ uint8_t BurstRead(uint8_t* imageBuf);
 uint8_t Upload_OV2640_Settings2(void); // yes im creative
 uint8_t BurstRead2(uint8_t* imageBuf);
 uint8_t ReadFifoRegByReg(uint8_t* imageBuf);
+uint32_t TrueLengthOfJpeg(uint8_t *imageBuffer);
+
+//image processing function
+
+	//---- Jpeg to ----> greyscale, functions pointers to work with "tjpgd.h"
+size_t jpegInput(JDEC* jd, uint8_t* buff, size_t nbyte);
+int jpegOutput(JDEC* jd, void* bitmap, JRECT* rect);
+
+	//---- functions that process the greyscale image
+uint8_t mean(uint8_t *buffer, uint32_t size);
+float Variance(uint8_t *buffer, uint32_t size, uint8_t mean);
+uint32_t SaturationHigh(uint8_t *Buffer, uint32_t size);
+uint32_t SaturationLow(uint8_t *Buffer, uint32_t size);
+uint8_t ImageSuitable(uint8_t mean, float Var,uint32_t saturationLow, uint32_t saturationHigh, uint32_t size);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -177,12 +210,7 @@ int main(void)
 	  pass++;
   }
 	*/
-  uint8_t test1 = ArducamRead(ARDUCHIP_TRIG);
-  uint8_t test2 = ArducamRead(FIFO_SIZE1);
-  uint8_t test3 = ArducamRead(FIFO_SIZE2);
-  uint8_t test4 = ArducamRead(FIFO_SIZE3);
 
-  uint8_t test5 = ArducamRead(0x00);
 
 
 
@@ -197,26 +225,68 @@ int main(void)
   }
 
 
-  uint8_t imageBuf[MAX_IMAGE_SIZE];
 
-  uint32_t lengthlenfth = read_fifo_length(); //959808 settings 2 153608 settings 1
+
+ // uint8_t imageBuf[MAX_IMAGE_SIZE]; // this will be
+
+  //uint32_t length = read_fifo_length(); //959808 settings 2 153608 settings 1
   //BurstRead(imageBuf);
 
 
-  while(!BurstRead2(imageBuf)){
-	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+  while(!BurstRead2(jpegData)){
+	  //HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
   }
   //uint8_t ReadFifoRegByReg(imageBuf);
  // CS_High();
 HAL_Delay(500);
 
-	uint8_t debuger[5];
+	uint16_t temp  = TrueLengthOfJpeg(jpegData);
+	jpegSize = temp;
 
-	for(uint8_t i = 0; i < 5 ;i++){
+	uint8_t jpegTest0 = jpegData[0];
+	uint8_t jpegTest1 = jpegData[1];
 
-		debuger[i] =imageBuf[i];
+	uint8_t jpegTestEnd0 = jpegData[temp-1];
+	uint8_t jpegTestEnd1 = jpegData[temp];
+
+
+
+
+	// 1️⃣ Prepare the decoder
+	JRESULT res = jd_prepare(&jdec, jpegInput, workBuffer, sizeof(workBuffer), NULL);
+	if (res != JDR_OK) {
+	    // handle error
+	}
+
+	// 2️⃣ Decompress the image
+	res = jd_decomp(&jdec, jpegOutput, 0);  // 0 = no scaling
+	if (res != JDR_OK) {
+	    // handle error
+	}
+	uint8_t pixel = 0;
+	uint8_t pixelss[1000];
+	for(uint16_t  i = 0; i < (IMAGE_WIDTH * IMAGE_HEIGHT); i++){
+
+		pixel = greyimageBuffer[i];
+		if(i <1000) pixelss[i] = greyimageBuffer[i];
+	}
+
+	uint8_t Mean = mean(greyimageBuffer, (IMAGE_WIDTH * IMAGE_HEIGHT));
+	float variance = Variance(greyimageBuffer, (IMAGE_WIDTH * IMAGE_HEIGHT), Mean);
+	uint32_t saturationHigh = SaturationHigh(greyimageBuffer, (IMAGE_WIDTH * IMAGE_HEIGHT));
+	uint32_t saturationLow = SaturationLow(greyimageBuffer, (IMAGE_WIDTH * IMAGE_HEIGHT));
+	if(ImageSuitable(Mean,variance,saturationHigh,saturationLow,(IMAGE_WIDTH * IMAGE_HEIGHT))){
+		while(1){
+		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+		  HAL_Delay(500);}
 
 	}
+
+
+
+
+
+
 
 
 
@@ -229,7 +299,8 @@ HAL_Delay(500);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
+	  HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+	  HAL_Delay(500);
 	 // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_C, GPIO_RESET); // onbard LED on
 
 
@@ -650,6 +721,143 @@ uint8_t Upload_OV2640_Settings2(void){ // its getting coooked ahhhhhhh goofy
 
 
 }
+
+uint32_t TrueLengthOfJpeg(uint8_t *imageBuffer){
+
+
+	uint32_t length = 0;
+
+	for(;!(imageBuffer[length] == 0xff && imageBuffer[length+1] == 0xd9); length++){
+		if(MAX_IMAGE_SIZE == length) return MAX_IMAGE_SIZE;
+	}
+
+	length++;
+	//length++;
+
+	//imageBuffer[length] = '\0';
+
+	return length;
+
+
+}
+
+
+
+size_t jpegInput(JDEC* jd, uint8_t* buff, size_t nbyte)
+{
+    static size_t pos = 0;
+
+    size_t bytesToGive = (pos + nbyte > jpegSize)
+                       ? (jpegSize - pos)
+                       : nbyte;
+
+    if (bytesToGive > 0 && buff != NULL) {
+        memcpy(buff, &jpegData[pos], bytesToGive);
+    }
+
+    pos += bytesToGive;   // <-- ALWAYS advance position
+
+    return bytesToGive;
+}
+
+
+int jpegOutput(JDEC* jd, void* bitmap, JRECT* rect) {
+    uint8_t* src = (uint8_t*)bitmap;
+    int w = rect->right - rect->left;
+    int h = rect->bottom - rect->top;
+
+    for (int y = 0; y < h; y++) {
+        int destY = rect->top + y;
+        if (destY >= IMAGE_HEIGHT) break;
+
+        for (int x = 0; x < w; x++) {
+            int destX = rect->left + x;
+            if (destX >= IMAGE_WIDTH) break;
+
+            // This line copies the pixel
+            greyimageBuffer[destY * IMAGE_WIDTH + destX] = src[y * w + x];
+        }
+    }
+
+    return 1;
+}
+
+uint8_t mean(uint8_t *buffer, uint32_t size){
+
+	uint32_t x = 0;
+
+
+	for(uint32_t n = 0; n < size; n++) x+= buffer[n];
+
+	uint8_t x_bar = x/size;
+
+	return x_bar;
+
+
+
+
+
+}
+
+float Variance(uint8_t *buffer, uint32_t size, uint8_t mean){
+
+	int32_t sum = 0;
+
+
+
+	for(uint32_t i = 0; i < size; i++){
+
+		int32_t diff = (int32_t)buffer[i] - (int32_t)mean;
+		sum += diff*diff;
+
+
+
+	}
+
+
+	float Var = (float)sum/(float)size;
+	return Var;
+}
+
+uint32_t SaturationHigh(uint8_t *Buffer, uint32_t size){
+
+	uint32_t saturationHigh = 0;
+
+	for(uint32_t i = 0; i < size; i++){
+		if(Buffer[i] > 240) saturationHigh++;
+	}
+	return saturationHigh;
+}
+uint32_t SaturationLow(uint8_t *Buffer, uint32_t size){
+
+	uint32_t saturationLow = 0;
+
+	for(uint32_t i = 0; i < size; i++){
+		if(Buffer[i] < 6) saturationLow++;
+	}
+	return saturationLow;
+}
+
+uint8_t ImageSuitable(uint8_t mean, float Var,uint32_t saturationLow, uint32_t saturationHigh, uint32_t size){
+
+//-----Brightness exposure
+	if(mean > 240) return 0 ; // image is too exposed to light, return 0 e.g not suitable
+	if(mean < 20) return 0; // image is too dark, not suitable
+
+//----- Texture in the image
+
+	if(Var < 3000) return 0; // not enough variation in pixels thus, image is probably usesless.
+
+//------ are too many pixel's spoiled
+	if (saturationHigh > size * 0.30) return 0;
+
+	if (saturationLow > size * 0.35) return 0;
+
+	return 1; // image is good
+
+
+}
+
 
 /* USER CODE END 4 */
 
