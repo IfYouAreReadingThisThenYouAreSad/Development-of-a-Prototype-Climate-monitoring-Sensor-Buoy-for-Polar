@@ -18,26 +18,26 @@
 typedef struct {
 	uint8_t reg;
 	uint8_t val;
-}sensor_reg;
+}SensorReg;
 
 
 
-extern const sensor_reg OV2640_QVGA[];
-extern const sensor_reg OV2640_JPEG_INIT[];
-extern const sensor_reg OV2640_YUV422[];
-extern const sensor_reg OV2640_JPEG[];
-extern const sensor_reg OV2640_160x120_JPEG[];
-extern const sensor_reg OV2640_176x144_JPEG[];
-extern const sensor_reg OV2640_320x240_JPEG[];
-extern const sensor_reg OV2640_352x288_JPEG[];
-extern const sensor_reg OV2640_640x480_JPEG[];
-extern const sensor_reg OV2640_800x600_JPEG[];
-extern const sensor_reg OV2640_1024x768_JPEG[];
-extern const sensor_reg OV2640_1280x1024_JPEG[];
-extern const sensor_reg OV2640_1600x1200_JPEG[];
-extern const sensor_reg OV2640_reset[];
-extern const sensor_reg OV2640_bankswitch[];
-extern const sensor_reg OV2640_RAW_QVGA[];
+extern const SensorReg OV2640_QVGA[];
+extern const SensorReg OV2640_JPEG_INIT[];
+extern const SensorReg OV2640_YUV422[];
+extern const SensorReg OV2640_JPEG[];
+extern const SensorReg OV2640_160x120_JPEG[];
+extern const SensorReg OV2640_176x144_JPEG[];
+extern const SensorReg OV2640_320x240_JPEG[];
+extern const SensorReg OV2640_352x288_JPEG[];
+extern const SensorReg OV2640_640x480_JPEG[];
+extern const SensorReg OV2640_800x600_JPEG[];
+extern const SensorReg OV2640_1024x768_JPEG[];
+extern const SensorReg OV2640_1280x1024_JPEG[];
+extern const SensorReg OV2640_1600x1200_JPEG[];
+extern const SensorReg OV2640_reset[];
+extern const SensorReg OV2640_bankswitch[];
+extern const SensorReg OV2640_RAW_QVGA[];
 
 
 

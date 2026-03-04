@@ -51,8 +51,8 @@ typedef struct  {
 	uint32_t size;        // actual length of JPEG in bytes
 	uint16_t width;
 	uint16_t height;
-	uint8_t greyimageBuffer[ RESOLUTION_WIDTH * RESOLUTION_HEIGHT ];
-	uint8_t workBuffer[3100]; // must be big enough for IDCT work
+	uint8_t greyimage_buffer[ RESOLUTION_WIDTH * RESOLUTION_HEIGHT ];
+	uint8_t work_buffer[3100]; // must be big enough for IDCT work
 	uint8_t data[MAX_IMAGE_SIZE];  // big enough for your JPEG
 
 
@@ -62,7 +62,7 @@ typedef struct  {
 
 
 
-}Jpeg_Information;
+}JpegInformation;
 
 
 
@@ -73,7 +73,7 @@ typedef enum {
     JPEG_OK = 0,
     JPEG_ERROR_INIT,
     JPEG_ERROR_DECODE
-} jpeg_status_t;
+} JpegStatus;
 
 
 
@@ -121,7 +121,7 @@ typedef enum {
  * @warning The greyimageBuffer must be large enough to store
  *          (width × height) bytes before calling this function.
  */
-jpeg_status_t jpeg_decode(Jpeg_Information *jpeg);
+JpegStatus jpeg_decode(JpegInformation *jpeg);
 
 
 

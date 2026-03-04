@@ -29,7 +29,7 @@ typedef enum {
     CAMERA_ERROR_I2C,
     CAMERA_ERROR_SPI,
     CAMERA_ERROR_TIMEOUT
-} camera_status_t;
+} CameraStatus;
 
 
 
@@ -62,7 +62,7 @@ I2C_HandleTypeDef *i2c;
 SPI_HandleTypeDef *spi;
 
 
-} camera_pin_assigment;
+} CameraTypeDef;
 
 
 
@@ -92,7 +92,7 @@ SPI_HandleTypeDef *spi;
  *
  * @return 1 if successful, 2-5 with the number indication which setting it failed to upload.
  */
-camera_status_t Upload_OV2640_Settings(const camera_pin_assigment *Camera_pins, const sensor_reg *set_resolution);
+CameraStatus upload_ov2640_settings(const CameraTypeDef *Camera_pins, const SensorReg *set_resolution);
 
 
 
@@ -114,7 +114,7 @@ camera_status_t Upload_OV2640_Settings(const camera_pin_assigment *Camera_pins, 
  *
  * @return CAMERA_OK e.g 0 if successful if not will return an error message
  */
-camera_status_t Capture(const camera_pin_assigment *Camera_pins);
+CameraStatus capture(const CameraTypeDef *Camera_pins);
 
 
 /**
@@ -126,7 +126,7 @@ camera_status_t Capture(const camera_pin_assigment *Camera_pins);
  * @return 1 if transmit was successful, 0 if not.
  */
 
-uint32_t Read_Fifo_Length(const camera_pin_assigment *Camera_pins);
+uint32_t read_fifo_length(const CameraTypeDef *Camera_pins);
 
 
 /**
@@ -138,7 +138,7 @@ uint32_t Read_Fifo_Length(const camera_pin_assigment *Camera_pins);
  *
  * @return CAMERA_OK e.g 0 if successful if not will return an error message
  */
-camera_status_t Burst_Read(const camera_pin_assigment *Camera_pins, uint8_t* imageBuf);
+CameraStatus burst_read(const CameraTypeDef *Camera_pins, uint8_t* imageBuf);
 
 
 /**
@@ -148,7 +148,7 @@ camera_status_t Burst_Read(const camera_pin_assigment *Camera_pins, uint8_t* ima
  *
  * @returns length of jpeg stored in arrary
  */
-uint32_t True_Length_Of_Jpeg(const uint8_t *imageBuffer);
+uint32_t true_length_of_jpeg(const uint8_t *imageBuffer);
 
 
 

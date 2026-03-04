@@ -7,7 +7,7 @@
 
 #include "ov2640_regsV2.h"
 
-const  sensor_reg OV2640_reset[] =
+const  SensorReg OV2640_reset[] =
 {
 
 	{0xff, 0x01},
@@ -15,7 +15,7 @@ const  sensor_reg OV2640_reset[] =
 
 };
 
-const  sensor_reg OV2640_RAW_QVGA[] =
+const  SensorReg OV2640_RAW_QVGA[] =
 {
     {0xff, 0x01},
     {0x12, 0x80},   // reset
@@ -32,7 +32,7 @@ const  sensor_reg OV2640_RAW_QVGA[] =
     {0xff, 0xff},
 };
 
-const sensor_reg OV2640_bankswitch[] = // i have no idea what this does but it seemed important in the git hub
+const SensorReg OV2640_bankswitch[] = // i have no idea what this does but it seemed important in the git hub
 {
 	  //  {0xff, 0x01}, // sensor bank
 	   // {0x15, 0x00}, // dsp bank
@@ -40,7 +40,7 @@ const sensor_reg OV2640_bankswitch[] = // i have no idea what this does but it s
 
 };
 
-const  sensor_reg OV2640_QVGA[]  =
+const  SensorReg OV2640_QVGA[]  =
 {
 	{0xff, 0x0},
 	{0x2c, 0xff},
@@ -248,7 +248,7 @@ const  sensor_reg OV2640_QVGA[]  =
 
 };
 
-const  sensor_reg OV2640_JPEG_INIT[]  =
+const  SensorReg OV2640_JPEG_INIT[]  =
 {
   { 0xff, 0x00 },
   { 0x2c, 0xff },
@@ -444,7 +444,7 @@ const  sensor_reg OV2640_JPEG_INIT[]  =
   { 0xff, 0xff },
 };
 
-const  sensor_reg OV2640_YUV422[]  =
+const  SensorReg OV2640_YUV422[]  =
 {
   { 0xff, 0x00 },
   { 0x05, 0x00 },
@@ -458,7 +458,7 @@ const  sensor_reg OV2640_YUV422[]  =
   { 0xff, 0xff },
 };
 
-const  sensor_reg OV2640_JPEG[]  =
+const  SensorReg OV2640_JPEG[]  =
 {
   { 0xe0, 0x14 },
   { 0xe1, 0x77 },
@@ -472,7 +472,7 @@ const  sensor_reg OV2640_JPEG[]  =
 };
 
 /* JPG 160x120 */
-const  sensor_reg OV2640_160x120_JPEG[]  =
+const  SensorReg OV2640_160x120_JPEG[]  =
 {
   { 0xff, 0x01 },
   { 0x12, 0x40 },
@@ -518,7 +518,7 @@ const  sensor_reg OV2640_160x120_JPEG[]  =
 
 /* JPG, 0x176x144 */
 
-const  sensor_reg OV2640_176x144_JPEG[]  =
+const  SensorReg OV2640_176x144_JPEG[]  =
 {
   { 0xff, 0x01 },
   { 0x12, 0x40 },
@@ -564,7 +564,7 @@ const  sensor_reg OV2640_176x144_JPEG[]  =
 
 /* JPG 320x240 */
 
-const  sensor_reg OV2640_320x240_JPEG[]  =
+const  SensorReg OV2640_320x240_JPEG[]  =
 {
   { 0xff, 0x01 },
   { 0x12, 0x40 },
@@ -610,7 +610,7 @@ const  sensor_reg OV2640_320x240_JPEG[]  =
 
 /* JPG 352x288 */
 
-const  sensor_reg OV2640_352x288_JPEG[]  =
+const  SensorReg OV2640_352x288_JPEG[]  =
 
 {
   { 0xff, 0x01 },
@@ -656,7 +656,7 @@ const  sensor_reg OV2640_352x288_JPEG[]  =
 };
 
 /* JPG 640x480 */
-const  sensor_reg OV2640_640x480_JPEG[]  =
+const  SensorReg OV2640_640x480_JPEG[]  =
 {
 	{0xff, 0x01},
 	{0x11, 0x01},
@@ -704,7 +704,7 @@ const  sensor_reg OV2640_640x480_JPEG[]  =
 };
 
 /* JPG 800x600 */
-const  sensor_reg OV2640_800x600_JPEG[]  =
+const  SensorReg OV2640_800x600_JPEG[]  =
 {
 	{0xff, 0x01},
 	{0x11, 0x01},
@@ -752,7 +752,7 @@ const  sensor_reg OV2640_800x600_JPEG[]  =
 };
 
 /* JPG 1024x768 */
-const  sensor_reg OV2640_1024x768_JPEG[]  =
+const  SensorReg OV2640_1024x768_JPEG[]  =
 {
 	{0xff, 0x01},
 	{0x11, 0x01},
@@ -799,7 +799,7 @@ const  sensor_reg OV2640_1024x768_JPEG[]  =
 };
 
    /* JPG 1280x1024 */
-const  sensor_reg OV2640_1280x1024_JPEG[]  =
+const  SensorReg OV2640_1280x1024_JPEG[]  =
 {
 	{0xff, 0x01},
 	{0x11, 0x01},
@@ -847,7 +847,7 @@ const  sensor_reg OV2640_1280x1024_JPEG[]  =
 };
 
    /* JPG 1600x1200 */
-const  sensor_reg OV2640_1600x1200_JPEG[]  =
+const  SensorReg OV2640_1600x1200_JPEG[]  =
 {
 	{0xff, 0x01},
 	{0x11, 0x01},
