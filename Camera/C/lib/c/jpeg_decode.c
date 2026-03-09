@@ -25,30 +25,29 @@
 
 		//---- Jpeg to ----> greyscale, functions pointers to work with "tjpgd.h"
 
-static size_t jpegInput(JDEC* jd, uint8_t* buff, size_t nbyte)
+static size_t jpeg_input(JDEC* jd, uint8_t* buffer, size_t nbyte)
 {
-    Jpeg_Information *jpeg = (Jpeg_Information*)jd->device;
+    JpegInformation *jpeg = (JpegInformation*)jd->device;
 
-    volatile uint32_t debug_size = jpeg->size;
-    volatile size_t debug_position = jpeg->position;
+
 
     size_t remaining = jpeg->size - jpeg->position;
-    size_t bytesToGive = (nbyte > remaining) ? remaining : nbyte;
+    size_t bytes_to_give = (nbyte > remaining) ? remaining : nbyte;
 
-    if (bytesToGive && buff) {
-        memcpy(buff, &jpeg->data[jpeg->position], bytesToGive);
+    if (bytes_to_give && buffer) {
+        memcpy(buffer, &jpeg->data[jpeg->position], bytes_to_give);
     }
 
-    jpeg->position += bytesToGive;
+    jpeg->position += bytes_to_give;
 
-    return bytesToGive;
+    return bytes_to_give;
 }
 
 
 
-static int jpegOutput(JDEC* jd, void* bitmap, JRECT* rect)
+static int jpeg_output(JDEC* jd, void* bitmap, JRECT* rect)
 {
-    Jpeg_Information *jpeg = (Jpeg_Information*)jd->device;
+    JpegInformation *jpeg = (JpegInformation*)jd->device;
     uint8_t* src = (uint8_t*)bitmap;
 
     int w = rect->right - rect->left + 1;
@@ -62,7 +61,7 @@ static int jpegOutput(JDEC* jd, void* bitmap, JRECT* rect)
             int destX = rect->left + x;
             if (destX >= jpeg->width) break;
 
-            jpeg->greyimageBuffer[destY * jpeg->width + destX] =
+            jpeg->grey_image_buffer[destY * jpeg->width + destX] =
                 src[y * w + x];
         }
     }
@@ -73,17 +72,16 @@ static int jpegOutput(JDEC* jd, void* bitmap, JRECT* rect)
 
 
 
-jpeg_status_t jpeg_decode(Jpeg_Information *jpeg)
+JpegStatus jpeg_decode(JpegInformation *jpeg)
 {
     JDEC decoder;
     JRESULT result;
-    JRESULT decode_error;
 
     jpeg->position = 0;   // reset read position
 
     result = jd_prepare(&decoder,
-                        jpegInput,
-                        jpeg->workBuffer,
+                        jpeg_input,
+                        jpeg->work_buffer,
                         4096,               // work buffer size
                         jpeg);
 
@@ -93,13 +91,13 @@ jpeg_status_t jpeg_decode(Jpeg_Information *jpeg)
     jpeg->width  = decoder.width;
     jpeg->height = decoder.height;
 
-    result = jd_decomp(&decoder, jpegOutput, 0);
+    result = jd_decomp(&decoder, jpeg_output, 0);
 
 
 
     if (result != JDR_OK){
         if(jpeg->size == jpeg->position && result == JDR_INP) return JPEG_OK;
-    	decode_error = result;
+
         return JPEG_ERROR_DECODE;}
 
     return JPEG_OK;

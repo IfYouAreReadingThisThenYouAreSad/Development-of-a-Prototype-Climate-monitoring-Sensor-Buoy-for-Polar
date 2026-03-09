@@ -37,7 +37,7 @@ typedef enum {
 	IMAGE_TEXTURE_LOW,
 	IMAGE_SATURATION_HIGH,
 	IMAGE_SATURATION_LOW
-} image_status_t;
+} ImageStatus;
 
 
 
@@ -49,16 +49,16 @@ typedef enum {
 
 typedef struct {
 
-	uint32_t saturationLow;
-	uint32_t saturationHigh;
-	float variance;
-	image_status_t suitability;
-	uint8_t mean;
+	uint32_t saturation_low_val;
+	uint32_t saturation_high_val;
+	float variance_val;
+	ImageStatus suitability_val;
+	uint8_t mean_val;
 
 
 
 
-}image_quality_information;
+}ImageQualityInformation;
 
 
 
@@ -145,14 +145,14 @@ typedef struct {
  *
  * @param size of grey-scale image (e.g its resolution)
  *
- * @param image_quality_information struct to store all the metric the function calculates
+ * @param ImageQualityInformation struct to store all the metric the function calculates
  *
  * @return IMAGE_OK if image is suitable for sending or will return an error depending on what matric it
  * fails at.
  */
-image_status_t ImageProcessing(
-		const Jpeg_Information *Jpeg,
-		image_quality_information *ImageInfo
+ImageStatus image_processing(
+		const JpegInformation *jpeg,
+		ImageQualityInformation *image
 		);
 
 

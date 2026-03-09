@@ -76,7 +76,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	Jpeg_Information Jpeg ={0};
+	JpegInformation jpeg ={0};
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -104,7 +104,7 @@ int main(void)
 
   // defines what pins my Arducam is wired to
 
-  camera_pin_assigment CameraPins ={
+  CameraTypeDef camera_pins ={
 	  .port = GPIOB,
 	  .pin = GPIO_PIN_9,
 
@@ -116,12 +116,12 @@ int main(void)
   };
 
 
-  Jpeg.height = RESOLUTION_HEIGHT;
-  Jpeg.width = RESOLUTION_WIDTH;
+  jpeg.height = RESOLUTION_HEIGHT;
+  jpeg.width = RESOLUTION_WIDTH;
 
 
   // uploading camera settings for image and storing pass/Error message in upload_success
-  camera_status_t upload_success = Upload_OV2640_Settings(&CameraPins,OV2640_160x120_JPEG);
+  CameraStatus upload_success = upload_ov2640_settings(&camera_pins,OV2640_160x120_JPEG);
 
   //if camera code uploaded successfully then onboard led will momentally flash
   if(upload_success == CAMERA_OK){
@@ -133,7 +133,7 @@ int main(void)
   }
 //-------------------------------------------------------------------
 
-  camera_status_t capture_success = Capture(&CameraPins);
+  CameraStatus capture_success = capture(&camera_pins);
 
   // if capture is successful then onboard led will momentarly flash
 
@@ -146,7 +146,7 @@ int main(void)
   }
 //-------------------------------------------------------------
 
-  camera_status_t reading_fifo = Burst_Read(&CameraPins, Jpeg.data);
+  CameraStatus reading_fifo = burst_read(&camera_pins, jpeg.data);
 
   //if fifo is read successfully then on-board led will binky quickly
 
@@ -158,13 +158,11 @@ int main(void)
 
   }
  //---------------------------------------------------------
-  Jpeg.size = True_Length_Of_Jpeg(&CameraPins, Jpeg.data);
-
-  const uint8_t jpegBegginging[2] = {Jpeg.data[0],Jpeg.data[1]};
-  const uint8_t jpegEnding[2] =  {Jpeg.data[Jpeg.size -1], Jpeg.data[Jpeg.size]};
+  jpeg.size = true_length_of_jpeg(&camera_pins, jpeg.data);
 
 
-  jpeg_status_t greyscale_conversion_success = jpeg_decode(&Jpeg);
+
+  JpegStatus greyscale_conversion_success = jpeg_decode(&jpeg);
 
   //if jpeg to greyscale conversion worked then on-board led will binky  quickly
 
@@ -178,13 +176,13 @@ int main(void)
 //-------------------------------------------
 
 
-  image_quality_information processing_results;
+  ImageQualityInformation processing_results;
 
-  ImageProcessing(&Jpeg,&processing_results);
+  image_processing(&jpeg,&processing_results);
 
 
   // onbard leg is left permantly on if image is suitable
-  if(processing_results.suitability == IMAGE_OK) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
+  if(processing_results.suitability_val == IMAGE_OK) HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
 
 
 

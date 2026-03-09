@@ -27,14 +27,14 @@
 
 
 
-static uint8_t Mean(const Jpeg_Information *Jpeg){
+static uint8_t mean(const JpegInformation *jpeg){
 
 	uint32_t x = 0;
 
 
-	for(uint32_t n = 0; n < Jpeg->size; n++) x+= Jpeg->data[n];
+	for(uint32_t n = 0; n < jpeg->size; n++) x+= jpeg->data[n];
 
-	uint8_t x_bar = x/Jpeg->size;
+	uint8_t x_bar = x/jpeg->size;
 
 	return x_bar;
 
@@ -44,15 +44,15 @@ static uint8_t Mean(const Jpeg_Information *Jpeg){
 
 }
 
-static float Variance(const Jpeg_Information *Jpeg, const uint8_t mean){
+static float variance(const JpegInformation *jpeg, const uint8_t mean){
 
 	int32_t sum = 0;
 
 
 
-	for(uint32_t i = 0; i < Jpeg->size; i++){
+	for(uint32_t i = 0; i < jpeg->size; i++){
 
-		int32_t diff = (int32_t)Jpeg->data[i] - (int32_t)mean;
+		int32_t diff = (int32_t)jpeg->data[i] - (int32_t)mean;
 		sum += diff*diff;
 
 
@@ -60,36 +60,36 @@ static float Variance(const Jpeg_Information *Jpeg, const uint8_t mean){
 	}
 
 
-	float Var = (float)sum/(float)Jpeg->size;
-	return Var;
+	float var = (float)sum/(float)jpeg->size;
+	return var;
 }
 
-static uint32_t SaturationHigh(const Jpeg_Information *Jpeg){
+static uint32_t saturation_high(const JpegInformation *jpeg){
 
-	uint32_t saturationHigh = 0;
+	uint32_t saturation_high_temp = 0;
 
-	for(uint32_t i = 0; i < Jpeg->size; i++){
-		if(Jpeg->data[i] > PIXEL_OVEREXPOSURE_LIMIT) saturationHigh++;
+	for(uint32_t i = 0; i < jpeg->size; i++){
+		if(jpeg->data[i] > PIXEL_OVEREXPOSURE_LIMIT) saturation_high_temp++;
 	}
-	return saturationHigh;
+	return saturation_high_temp;
 }
 
 
-static uint32_t SaturationLow(const Jpeg_Information *Jpeg){
+static uint32_t saturation_low(const JpegInformation *jpeg){
 
-	uint32_t saturationLow = 0;
+	uint32_t saturation_low_temp = 0;
 
-	for(uint32_t i = 0; i < Jpeg->size; i++){
-		if(Jpeg->data[i] < PIXEL_UNDEREXPOSURE_LIMIT) saturationLow++;
+	for(uint32_t i = 0; i < jpeg->size; i++){
+		if(jpeg->data[i] < PIXEL_UNDEREXPOSURE_LIMIT) saturation_low_temp++;
 	}
-	return saturationLow;
+	return saturation_low_temp;
 }
 
-static image_status_t ImageSuitable(
+static ImageStatus image_suitable(
 		const uint8_t mean,
-		const float Var,
-		const uint32_t saturationLow,
-		const uint32_t saturationHigh,
+		const float variance,
+		const uint32_t saturation_low_temp,
+		const uint32_t saturation_high_temp,
 		const uint32_t size
 		){
 
@@ -99,12 +99,12 @@ static image_status_t ImageSuitable(
 
 //----- Texture in the image
 
-	if(Var < VARIANCE_THRESHOLD) return IMAGE_TEXTURE_LOW; // not enough variation in pixels thus, image is probably usesless.
+	if(variance < VARIANCE_THRESHOLD) return IMAGE_TEXTURE_LOW; // not enough variation in pixels thus, image is probably usesless.
 
 //------ are too many pixel's spoiled
-	if (saturationHigh > size * MAX_SATURATED_HIGH_RATIO) return IMAGE_SATURATION_HIGH;
+	if (saturation_high_temp > size * MAX_SATURATED_HIGH_RATIO) return IMAGE_SATURATION_HIGH;
 
-	if (saturationLow > size * MAX_SATURATED_LOW_RATIO) return IMAGE_SATURATION_LOW;
+	if (saturation_low_temp > size * MAX_SATURATED_LOW_RATIO) return IMAGE_SATURATION_LOW;
 
 	return IMAGE_OK; // image is good
 
@@ -112,36 +112,36 @@ static image_status_t ImageSuitable(
 }
 
 
-image_status_t ImageProcessing(
-		const Jpeg_Information *Jpeg,
-		image_quality_information *ImageInfo
+ImageStatus image_processing(
+		const JpegInformation *jpeg,
+		ImageQualityInformation *image
 		){
 
 
 
-	ImageInfo->mean = Mean(Jpeg);
+	image->mean_val = mean(jpeg);
 
-	ImageInfo->variance = Variance(Jpeg,ImageInfo->mean);
+	image->variance_val = variance(jpeg,image->mean_val);
 
-	ImageInfo->saturationHigh = SaturationHigh(Jpeg);
+	image->saturation_high_val = saturation_high(jpeg);
 
-	ImageInfo->saturationLow = SaturationLow(Jpeg);
-
-
+	image->saturation_low_val = saturation_low(jpeg);
 
 
-	ImageInfo->suitability = ImageSuitable(
-			ImageInfo->mean,
-			ImageInfo->variance,
-			ImageInfo->saturationLow,
-			ImageInfo->saturationHigh,
-			Jpeg->size
+
+
+	image->suitability_val = image_suitable(
+			image->mean_val,
+			image->variance_val,
+			image->saturation_low_val,
+			image->saturation_high_val,
+			jpeg->size
 			);
 
 
 
 
-	return ImageInfo->suitability;
+	return image->suitability_val;
 
 
 

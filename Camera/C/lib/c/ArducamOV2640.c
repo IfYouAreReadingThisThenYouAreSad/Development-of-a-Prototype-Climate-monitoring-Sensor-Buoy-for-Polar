@@ -65,15 +65,15 @@
 
 	//-----I2C commincations to the OV2640 Sensor on Arducam
 
-static uint8_t WriteOV2640(const camera_pin_assigment *Camera_pins, uint8_t reg, uint8_t val){
+static uint8_t write_ov2640(const CameraTypeDef *camera_pins, uint8_t reg, uint8_t val){
 
 
 
 
 	//set a hal type def to test later if the write worked
-	HAL_StatusTypeDef I2C_status =
+	HAL_StatusTypeDef i2c_status =
 			HAL_I2C_Mem_Write(
-					Camera_pins->i2c,
+					camera_pins->i2c,
 					OV2640_ADDR,
 					reg,
 					I2C_MEMADD_SIZE_8BIT,
@@ -82,7 +82,7 @@ static uint8_t WriteOV2640(const camera_pin_assigment *Camera_pins, uint8_t reg,
 					HAL_MAX_DELAY);
 
 
-	if(HAL_OK == I2C_status) return 1;
+	if(HAL_OK == i2c_status) return 1;
 
 	return 0; //unsuccessful
 
@@ -91,45 +91,45 @@ static uint8_t WriteOV2640(const camera_pin_assigment *Camera_pins, uint8_t reg,
 
 }
 
-static camera_status_t Uploading(const camera_pin_assigment *Camera_pins, const sensor_reg* Set_Val){
+static CameraStatus uploading(const CameraTypeDef *camera_pins, const SensorReg* set_value){
 
 	uint8_t index = 0;
-	uint8_t Success = 0;
+	uint8_t success = 0;
 
-	for(; !(Set_Val[index].reg == 0xff && Set_Val[index].val == 0xff); index++){ //stops if hits fake reg (e.g stop reg noted 0xff)
+	for(; !(set_value[index].reg == 0xff && set_value[index].val == 0xff); index++){ //stops if hits fake reg (e.g stop reg noted 0xff)
 
-		Success += WriteOV2640(
-				Camera_pins,
-				Set_Val[index].reg,
-				Set_Val[index].val
+		success += write_ov2640(
+				camera_pins,
+				set_value[index].reg,
+				set_value[index].val
 				);
 
 	}
 
 
-	if(Success == index) return CAMERA_OK;
+	if(success == index) return CAMERA_OK;
 	return CAMERA_ERROR_I2C;
 
 }
 
 
-camera_status_t Upload_OV2640_Settings(
-		const camera_pin_assigment *Camera_pins,
-		const sensor_reg *set_resolution
+CameraStatus upload_ov2640_settings(
+		const CameraTypeDef *camera_pins,
+		const SensorReg *set_resolution
 		){
 
-	if(Uploading(Camera_pins, OV2640_reset) != CAMERA_OK ){ return CAMERA_ERROR_I2C_RESET;}
+	if(uploading(camera_pins, OV2640_reset) != CAMERA_OK ){ return CAMERA_ERROR_I2C_RESET;}
 
 
 
-	if(Uploading(Camera_pins, OV2640_JPEG_INIT) != CAMERA_OK){ return CAMERA_ERROR_I2C_JPEG_INT;}
+	if(uploading(camera_pins, OV2640_JPEG_INIT) != CAMERA_OK){ return CAMERA_ERROR_I2C_JPEG_INT;}
 
 
 
-	if(Uploading(Camera_pins, OV2640_JPEG) != CAMERA_OK){return CAMERA_ERROR_I2C_JPEG;}
+	if(uploading(camera_pins, OV2640_JPEG) != CAMERA_OK){return CAMERA_ERROR_I2C_JPEG;}
 
 
-	if(Uploading(Camera_pins, set_resolution) != CAMERA_OK){ return CAMERA_ERROR_I2C_RESOLUTIONS;}
+	if(uploading(camera_pins, set_resolution) != CAMERA_OK){ return CAMERA_ERROR_I2C_RESOLUTIONS;}
 
 
 
@@ -147,42 +147,42 @@ camera_status_t Upload_OV2640_Settings(
 
 
 
-static void CS_High(const camera_pin_assigment *Camera_pins){
+static void cs_high(const CameraTypeDef *camera_pins){
 
-	HAL_GPIO_WritePin(Camera_pins->port,Camera_pins->pin,GPIO_PIN_SET);
+	HAL_GPIO_WritePin(camera_pins->port,camera_pins->pin,GPIO_PIN_SET);
 }
 
 
 
 
 
-static void CS_Low(const camera_pin_assigment *Camera_pins){
+static void cs_low(const CameraTypeDef *camera_pins){
 
-	HAL_GPIO_WritePin(Camera_pins->port,Camera_pins->pin,GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(camera_pins->port,camera_pins->pin,GPIO_PIN_RESET);
 
 }
 
 
-static camera_status_t ArducamWrite(const camera_pin_assigment *Camera_pins, uint8_t reg, uint8_t val){
+static CameraStatus arducam_write(const CameraTypeDef *camera_pins, uint8_t reg, uint8_t val){
 
 
 
-	uint8_t sendData[2];
-	sendData[0] = reg | 0x80; // bit masking
-	sendData[1] = val;
+	uint8_t send_data[2];
+	send_data[0] = reg | 0x80; // bit masking
+	send_data[1] = val;
 
 
-	CS_Low(Camera_pins);//set SPI fifo to listening mode
+	cs_low(camera_pins);//set SPI fifo to listening mode
 
 //-----------send registor information---------------///
 
-	HAL_StatusTypeDef SPI_status = HAL_SPI_Transmit(Camera_pins->spi, sendData, 2, HAL_MAX_DELAY);
-	if(HAL_OK == SPI_status){ //testing if transmit worked
-		CS_High(Camera_pins);
+	HAL_StatusTypeDef spi_status = HAL_SPI_Transmit(camera_pins->spi, send_data, 2, HAL_MAX_DELAY);
+	if(HAL_OK == spi_status){ //testing if transmit worked
+		cs_high(camera_pins);
 		return CAMERA_OK;
 	}
 
-	CS_High(Camera_pins);// set SPI fifo to ignoring mode
+	cs_high(camera_pins);// set SPI fifo to ignoring mode
 	return CAMERA_ERROR_SPI;
 
 
@@ -190,7 +190,7 @@ static camera_status_t ArducamWrite(const camera_pin_assigment *Camera_pins, uin
 }
 
 
-static uint8_t ArducamRead(const camera_pin_assigment *Camera_pins, uint8_t reg)
+static uint8_t arducam_read(const CameraTypeDef *camera_pins, uint8_t reg)
 {
 	//Hal function expects arrays
     uint8_t tx[2];
@@ -199,36 +199,36 @@ static uint8_t ArducamRead(const camera_pin_assigment *Camera_pins, uint8_t reg)
     tx[0] = reg & 0x7F;  // MSB = 0 → READ
     tx[1] = 0x00;        // dummy byte e.g with rx[1]
 
-    CS_Low(Camera_pins);
+    cs_low(camera_pins);
 
     //----start transmitting and recieving registor data-------//
 
-    HAL_SPI_TransmitReceive(Camera_pins->spi, tx, rx, 2, HAL_MAX_DELAY);
+    HAL_SPI_TransmitReceive(camera_pins->spi, tx, rx, 2, HAL_MAX_DELAY);
 
-    CS_High(Camera_pins);
+    cs_high(camera_pins);
 
     return rx[1];  // second byte is the register value
 }
 
-static camera_status_t flush_fifo(const camera_pin_assigment *Camera_pins){
+static CameraStatus flush_fifo(const CameraTypeDef *camera_pins){
 
-	return ArducamWrite(Camera_pins, ARDUCHIP_FIFO, FIFO_CLEAR_MASK);
+	return arducam_write(camera_pins, ARDUCHIP_FIFO, FIFO_CLEAR_MASK);
 
 }
 
 
-static camera_status_t clear_fifo_flag(const camera_pin_assigment *Camera_pins){
+static CameraStatus clear_fifo_flag(const CameraTypeDef *camera_pins){
 
-	return ArducamWrite(Camera_pins, ARDUCHIP_FIFO, FIFO_CLEAR_MASK);
+	return arducam_write(camera_pins, ARDUCHIP_FIFO, FIFO_CLEAR_MASK);
 }
 
 
-camera_status_t Capture(const camera_pin_assigment *Camera_pins){
+CameraStatus capture(const CameraTypeDef *camera_pins){
 
 //----- clear the fifo buffer flags --------//
-	flush_fifo(Camera_pins);
+	flush_fifo(camera_pins);
 
-	clear_fifo_flag(Camera_pins);
+	clear_fifo_flag(camera_pins);
 
 
 
@@ -236,7 +236,7 @@ camera_status_t Capture(const camera_pin_assigment *Camera_pins){
 
 
 //--- start capturing -----//
-	ArducamWrite(Camera_pins, ARDUCHIP_FIFO, FIFO_START_MASK); // this line tells Arudcam to capture
+	arducam_write(camera_pins, ARDUCHIP_FIFO, FIFO_START_MASK); // this line tells Arudcam to capture
 
 
 	HAL_Delay(5);
@@ -246,7 +246,7 @@ camera_status_t Capture(const camera_pin_assigment *Camera_pins){
 
 
 
-	while (!(ArducamRead(Camera_pins, ARDUCHIP_TRIG) & CAP_DONE_MASK)){
+	while (!(arducam_read(camera_pins, ARDUCHIP_TRIG) & CAP_DONE_MASK)){
 
 		//loop makes sure Arudcam is done capturing
 
@@ -259,13 +259,13 @@ camera_status_t Capture(const camera_pin_assigment *Camera_pins){
 
 
 
-uint32_t Read_Fifo_Length(const camera_pin_assigment *Camera_pins)
+uint32_t read_fifo_length(const CameraTypeDef *camera_pins)
 	{
 
 		uint32_t len1,len2,len3,length=0;
-		len1 = ArducamRead(Camera_pins, FIFO_SIZE1);
-	  len2 = ArducamRead(Camera_pins, FIFO_SIZE2);
-	  len3 = ArducamRead(Camera_pins, FIFO_SIZE3) & 0x7f;
+		len1 = arducam_read(camera_pins, FIFO_SIZE1);
+	  len2 = arducam_read(camera_pins, FIFO_SIZE2);
+	  len3 = arducam_read(camera_pins, FIFO_SIZE3) & 0x7f;
 	  length = ((len3 << 16) | (len2 << 8) | len1) & 0x07fffff;
 
 		return length;
@@ -276,62 +276,62 @@ uint32_t Read_Fifo_Length(const camera_pin_assigment *Camera_pins)
 
 
 
-static uint8_t Read_Fifo(const camera_pin_assigment *Camera_pins)
+static uint8_t read_fifo(const CameraTypeDef *camera_pins)
 {
 
-	return ArducamRead(Camera_pins, SINGLE_FIFO_READ);
+	return arducam_read(camera_pins, SINGLE_FIFO_READ);
 
 }
 
 
 
-camera_status_t Burst_Read(const camera_pin_assigment *Camera_pins, uint8_t* imageBuf)
+CameraStatus burst_read(const CameraTypeDef *camera_pins, uint8_t* image_buffer)
 {
 
-    uint32_t imagelength = Read_Fifo_Length(Camera_pins);
+    uint32_t image_length = read_fifo_length(camera_pins);
 
 
     // making sure there is no memory overload //
-    if (imagelength == 0 || imagelength > MAX_IMAGE_SIZE)
+    if (image_length == 0 || image_length > MAX_IMAGE_SIZE)
     {
-        //CS_High();
+        //cs_high();
         //return 0;
-		imagelength = MAX_IMAGE_SIZE;
+		image_length = MAX_IMAGE_SIZE;
     }
-	if(imagelength == 0){
+	if(image_length == 0){
 
 		return CAMERA_ERROR_SPI;
 	}
 
 //first sends a command to burst reads//
     uint8_t cmd = BURST_FIFO_READ;
-    CS_Low(Camera_pins);
-    HAL_SPI_Transmit(Camera_pins->spi, &cmd, 1, HAL_MAX_DELAY);
+    cs_low(camera_pins);
+    HAL_SPI_Transmit(camera_pins->spi, &cmd, 1, HAL_MAX_DELAY);
 
 // then reads fifo//
-    for(uint32_t i = 0; i < imagelength; i++)
+    for(uint32_t i = 0; i < image_length; i++)
     {
         uint8_t dummy = 0x00;
-        HAL_SPI_TransmitReceive(Camera_pins->spi, &dummy, &imageBuf[i], 1, HAL_MAX_DELAY);
+        HAL_SPI_TransmitReceive(camera_pins->spi, &dummy, &image_buffer[i], 1, HAL_MAX_DELAY);
     }
 
-    CS_High(Camera_pins);
+    cs_high(camera_pins);
     return CAMERA_OK;}
 
 
 
-uint32_t True_Length_Of_Jpeg(const camera_pin_assigment *Camera_pins, const uint8_t *imageBuffer){
+uint32_t true_length_of_jpeg(const CameraTypeDef *camera_pins, const uint8_t *image_buffer){
 
-	uint32_t imagelength = Read_Fifo_Length(Camera_pins);
+	uint32_t image_length = read_fifo_length(camera_pins);
 	uint32_t length = 0;
 	uint32_t endsignature = 0;
 
 	for(
 			;
-			length < imagelength; //jpegs ends with 0xff and then 0xd9
+			length < image_length; //jpegs ends with 0xff and then 0xd9
 			length++
 			){
-		if(imageBuffer[length] == 0xff && imageBuffer[length+1] == 0xd9) endsignature = length;
+		if(image_buffer[length] == 0xff && image_buffer[length+1] == 0xd9) endsignature = length;
 
 		if(MAX_IMAGE_SIZE == length) return MAX_IMAGE_SIZE; //again protecting from memory overload
 	}
