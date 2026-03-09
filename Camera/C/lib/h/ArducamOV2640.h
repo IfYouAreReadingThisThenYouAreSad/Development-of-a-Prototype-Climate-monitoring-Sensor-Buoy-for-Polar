@@ -9,7 +9,9 @@
 #define INC_ARDUCAMOV2640_H_
 
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 //---------INCLUDES----------//
 #include "stm32f4xx_hal.h"
@@ -26,7 +28,11 @@
 	//----used as debugging message for functions-----///
 typedef enum {
     CAMERA_OK = 0,
-    CAMERA_ERROR_I2C,
+	CAMERA_ERROR_I2C,
+    CAMERA_ERROR_I2C_RESET,
+    CAMERA_ERROR_I2C_JPEG_INT,
+    CAMERA_ERROR_I2C_JPEG,
+    CAMERA_ERROR_I2C_RESOLUTIONS,
     CAMERA_ERROR_SPI,
     CAMERA_ERROR_TIMEOUT
 } camera_status_t;
@@ -148,7 +154,7 @@ camera_status_t Burst_Read(const camera_pin_assigment *Camera_pins, uint8_t* ima
  *
  * @returns length of jpeg stored in arrary
  */
-uint32_t True_Length_Of_Jpeg(const uint8_t *imageBuffer);
+uint32_t True_Length_Of_Jpeg(const camera_pin_assigment *Camera_pins, const uint8_t *imageBuffer);
 
 
 
@@ -158,9 +164,9 @@ uint32_t True_Length_Of_Jpeg(const uint8_t *imageBuffer);
 
 
 
-
-
-
+#ifdef __cplusplus
+}
+#endif
 
 
 

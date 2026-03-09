@@ -16,7 +16,9 @@
 #ifndef INC_JPEG_DECODE_H_
 #define INC_JPEG_DECODE_H_
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 //----------------------INCLUDES-----------------------//
@@ -48,14 +50,14 @@
 
 typedef struct  {
 
-	uint32_t size;        // actual length of JPEG in bytes
+      // actual length of JPEG in bytes
 	uint16_t width;
 	uint16_t height;
 	uint8_t greyimageBuffer[ RESOLUTION_WIDTH * RESOLUTION_HEIGHT ];
-	uint8_t workBuffer[3100]; // must be big enough for IDCT work
+	uint8_t workBuffer[4096]; // must be big enough for IDCT work
 	uint8_t data[MAX_IMAGE_SIZE];  // big enough for your JPEG
 
-
+	uint32_t size;
 	size_t position;
 
 
@@ -130,7 +132,9 @@ jpeg_status_t jpeg_decode(Jpeg_Information *jpeg);
 
 
 
-
+#ifdef __cplusplus
+}
+#endif
 
 
 

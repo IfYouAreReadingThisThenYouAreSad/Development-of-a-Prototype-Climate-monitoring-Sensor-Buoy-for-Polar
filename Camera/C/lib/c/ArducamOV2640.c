@@ -65,7 +65,7 @@
 
 	//-----I2C commincations to the OV2640 Sensor on Arducam
 
-static camera_status_t WriteOV2640(const camera_pin_assigment *Camera_pins, uint8_t reg, uint8_t val){
+static uint8_t WriteOV2640(const camera_pin_assigment *Camera_pins, uint8_t reg, uint8_t val){
 
 
 
@@ -81,9 +81,10 @@ static camera_status_t WriteOV2640(const camera_pin_assigment *Camera_pins, uint
 					1,
 					HAL_MAX_DELAY);
 
-	if(HAL_OK == I2C_status) return CAMERA_OK;
 
-	return CAMERA_ERROR_I2C; //unsuccessful
+	if(HAL_OK == I2C_status) return 1;
+
+	return 0; //unsuccessful
 
 
 
@@ -117,17 +118,18 @@ camera_status_t Upload_OV2640_Settings(
 		const sensor_reg *set_resolution
 		){
 
-	if(!Uploading(Camera_pins, OV2640_reset)){ return CAMERA_ERROR_I2C;}
-
-
-	if(!Uploading(Camera_pins, OV2640_JPEG_INIT)){ return CAMERA_ERROR_I2C;}
+	if(Uploading(Camera_pins, OV2640_reset) != CAMERA_OK ){ return CAMERA_ERROR_I2C_RESET;}
 
 
 
-	if(!Uploading(Camera_pins, OV2640_JPEG)){return CAMERA_ERROR_I2C;}
+	if(Uploading(Camera_pins, OV2640_JPEG_INIT) != CAMERA_OK){ return CAMERA_ERROR_I2C_JPEG_INT;}
 
 
-	if(!Uploading(Camera_pins, set_resolution)){ return CAMERA_ERROR_I2C;}
+
+	if(Uploading(Camera_pins, OV2640_JPEG) != CAMERA_OK){return CAMERA_ERROR_I2C_JPEG;}
+
+
+	if(Uploading(Camera_pins, set_resolution) != CAMERA_OK){ return CAMERA_ERROR_I2C_RESOLUTIONS;}
 
 
 
@@ -318,30 +320,26 @@ camera_status_t Burst_Read(const camera_pin_assigment *Camera_pins, uint8_t* ima
 
 
 
-uint32_t True_Length_Of_Jpeg(const uint8_t *imageBuffer){
+uint32_t True_Length_Of_Jpeg(const camera_pin_assigment *Camera_pins, const uint8_t *imageBuffer){
 
-
+	uint32_t imagelength = Read_Fifo_Length(Camera_pins);
 	uint32_t length = 0;
+	uint32_t endsignature = 0;
 
 	for(
 			;
-			!(imageBuffer[length] == 0xff && imageBuffer[length+1] == 0xd9); //jpegs ends with 0xff and then 0xd9
+			length < imagelength; //jpegs ends with 0xff and then 0xd9
 			length++
 			){
+		if(imageBuffer[length] == 0xff && imageBuffer[length+1] == 0xd9) endsignature = length;
+
 		if(MAX_IMAGE_SIZE == length) return MAX_IMAGE_SIZE; //again protecting from memory overload
 	}
 
-	length++;
+	endsignature++;
 
 
-	return length;
+	return endsignature;
 
 
 }
-
-
-
-
-
-
-

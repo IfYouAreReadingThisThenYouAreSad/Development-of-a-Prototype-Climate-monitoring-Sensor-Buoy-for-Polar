@@ -9,6 +9,14 @@
 #ifndef INC_OV2640_REGSV2_H_
 #define INC_OV2640_REGSV2_H_
 
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+
 #define OV2640_CHIPID_HIGH 	0x0a
 #define OV2640_CHIPID_LOW 	0x0b
 
@@ -39,6 +47,8 @@ extern const sensor_reg OV2640_reset[];
 extern const sensor_reg OV2640_bankswitch[];
 extern const sensor_reg OV2640_RAW_QVGA[];
 
-
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INC_OV2640_REGSV2_H_ */

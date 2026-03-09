@@ -29,6 +29,9 @@ static size_t jpegInput(JDEC* jd, uint8_t* buff, size_t nbyte)
 {
     Jpeg_Information *jpeg = (Jpeg_Information*)jd->device;
 
+    volatile uint32_t debug_size = jpeg->size;
+    volatile size_t debug_position = jpeg->position;
+
     size_t remaining = jpeg->size - jpeg->position;
     size_t bytesToGive = (nbyte > remaining) ? remaining : nbyte;
 
@@ -74,6 +77,7 @@ jpeg_status_t jpeg_decode(Jpeg_Information *jpeg)
 {
     JDEC decoder;
     JRESULT result;
+    JRESULT decode_error;
 
     jpeg->position = 0;   // reset read position
 
@@ -91,9 +95,12 @@ jpeg_status_t jpeg_decode(Jpeg_Information *jpeg)
 
     result = jd_decomp(&decoder, jpegOutput, 0);
 
-    if (result != JDR_OK)
-        return JPEG_ERROR_DECODE;
+
+
+    if (result != JDR_OK){
+        if(jpeg->size == jpeg->position && result == JDR_INP) return JPEG_OK;
+    	decode_error = result;
+        return JPEG_ERROR_DECODE;}
 
     return JPEG_OK;
 }
-

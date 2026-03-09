@@ -76,7 +76,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+	Jpeg_Information Jpeg ={0};
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -115,7 +115,7 @@ int main(void)
 
   };
 
-  Jpeg_Information Jpeg;
+
   Jpeg.height = RESOLUTION_HEIGHT;
   Jpeg.width = RESOLUTION_WIDTH;
 
@@ -158,8 +158,7 @@ int main(void)
 
   }
  //---------------------------------------------------------
-
-  Jpeg.size = True_Length_Of_Jpeg(Jpeg.data);
+  Jpeg.size = True_Length_Of_Jpeg(&CameraPins, Jpeg.data);
 
   const uint8_t jpegBegginging[2] = {Jpeg.data[0],Jpeg.data[1]};
   const uint8_t jpegEnding[2] =  {Jpeg.data[Jpeg.size -1], Jpeg.data[Jpeg.size]};

@@ -10,7 +10,9 @@
 
 
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 //----------------------INCLUDES-----------------------//
@@ -155,7 +157,9 @@ image_status_t ImageProcessing(
 
 
 
-
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif /* INC_IMAGE_QUALITY_H_ */
