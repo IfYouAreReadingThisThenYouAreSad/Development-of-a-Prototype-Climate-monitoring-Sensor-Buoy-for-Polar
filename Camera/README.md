@@ -1,10 +1,16 @@
+![Platform](https://img.shields.io/badge/platform-STM32-blue)
+![Language](https://img.shields.io/badge/language-C-green)
+![IDE](https://img.shields.io/badge/IDE-STM32CubeIDE-orange)
+
 # Camera Driver – Arducam OV2640 (STM32)
 
-## 1. About
+---
+
+# 1. About
 
 This directory contains a **C driver for the Arducam 2MP OV2640 camera module**, designed to run on **STM32 microcontrollers**.
 
-The driver was developed as part of the **Prototype Climate Monitoring Sensor Buoy project**, where the system requires periodic image acquisition to monitor environmental conditions.
+The driver was developed as part of the **Prototype Climate Monitoring Sensor Buoy project**, where the system periodically captures images to monitor environmental conditions.
 
 The implementation supports:
 
@@ -22,24 +28,78 @@ This project uses the **Arducam Mini 2MP SPI Camera Module with OV2640 sensor**.
 
 <p align="center">
   <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Camera/ArducamPhoto.jpg"
-    alt="Figure 1 shows the Arducam camera module" width="400">
+    alt="Arducam camera module" width="400">
 </p>
+
 <p align="center">Figure 1: Arducam Mini 2MP OV2640 Camera Module</p>
 
-**Product link**
-
+**Product link:**  
 https://thepihut.com/products/mini-2mp-spi-camera-module-for-raspberry-pi-pico
 
 The module contains:
 
 - **OV2640 CMOS image sensor**
-- **Arducam FIFO buffer**
-- **SPI interface for image data**
+- **Arducam FIFO image buffer**
+- **SPI interface for image transfer**
 - **I2C interface for sensor configuration**
 
 ---
 
-# 3. API
+# 3. Tested Hardware
+
+This driver has been tested with:
+
+- **STM32F401RCT6**
+- **Arducam Mini 2MP SPI Camera (OV2640)**
+
+---
+
+# 4. Development Environment
+
+| Tool | Version |
+|-----|--------|
+| IDE | STM32CubeIDE |
+| Version | 2.0.0 |
+| Build | 26820_20251114_1348 |
+| Vendor | STMicroelectronics |
+| MCU | STM32F401RCT6 |
+| Firmware Library | STM32 HAL |
+
+---
+
+# 5. Hardware Connections
+
+The Arducam module communicates with the STM32 using **SPI for image data** and **I2C for camera configuration**.
+
+## STM32 ↔ Arducam Connections
+
+| Arducam Pin | STM32 Peripheral | Description |
+|-------------|------------------|-------------|
+| VCC | 3.3V | Power supply |
+| GND | GND | Ground |
+| SCL | I2C_SCL | I2C clock used to configure OV2640 registers |
+| SDA | I2C_SDA | I2C data line used for sensor configuration |
+| MOSI | SPI_MOSI | SPI data from MCU to Arducam |
+| MISO | SPI_MISO | SPI data from Arducam FIFO to MCU |
+| SCK | SPI_SCK | SPI clock |
+| CS | GPIO | Chip select for Arducam SPI interface |
+
+---
+
+## Example STM32F401 Pin Mapping
+
+| STM32 Pin | Peripheral | Function |
+|-----------|-----------|----------|
+| PB3 | SPI1_SCK | SPI clock |
+| PB4 | SPI1_MISO | SPI data from camera |
+| PB5 | SPI1_MOSI | SPI data to camera |
+| PB6 | I2C1_SCL | I2C clock |
+| PB7 | I2C1_SDA | I2C data |
+| PB9 | GPIO Output | Arducam Chip Select |
+
+---
+
+# 6. API
 
 ## Functions
 
@@ -54,9 +114,10 @@ The module contains:
 
 ---
 
-# 4. Data Types (Structs)
+# 7. Data Types (Structs)
 
-## `CameraTypeDef`  
+## `CameraTypeDef`
+
 Defined in **ArducamOV2640.h**
 
 | Type | Field | Description |
@@ -68,7 +129,8 @@ Defined in **ArducamOV2640.h**
 
 ---
 
-## `JpegInformation`  
+## `JpegInformation`
+
 Defined in **jpeg_decode.h**
 
 | Type | Field | Description |
@@ -83,7 +145,8 @@ Defined in **jpeg_decode.h**
 
 ---
 
-## `ImageQualityInformation`  
+## `ImageQualityInformation`
+
 Defined in **image_quality.h**
 
 | Type | Field | Description |
@@ -96,7 +159,7 @@ Defined in **image_quality.h**
 
 ---
 
-# 5. Macros
+# 8. Macros
 
 | Header | Macro | Description |
 |------|------|-------------|
@@ -113,11 +176,74 @@ Defined in **image_quality.h**
 
 ---
 
-# 6. Enums
+# 9. Supported Resolutions
+
+The OV2640 sensor supports multiple JPEG resolutions.
+
+For this project the firmware is configured for **QQVGA (160×120)** due to the **limited RAM available on the STM32F401RCT6**.
+
+Using higher resolutions requires increasing several buffers in the code:
+
+- `grey_image_buffer`
+- `data` (JPEG storage)
+- `MAX_IMAGE_SIZE`
+- `RESOLUTION_WIDTH`
+- `RESOLUTION_HEIGHT`
+
+| Header | Macro | Resolution | Dimensions |
+|------|------|-----------|-----------|
+| `ov2640_regsV2.h` | `OV2640_160x120_JPEG` | QQVGA | 160 × 120 |
+| `ov2640_regsV2.h` | `OV2640_QVGA` | QVGA | 320 × 240 |
+| `ov2640_regsV2.h` | `OV2640_640x480_JPEG` | VGA | 640 × 480 |
+| `ov2640_regsV2.h` | `OV2640_800x600_JPEG` | SVGA | 800 × 600 |
+| `ov2640_regsV2.h` | `OV2640_1024x768_JPEG` | XGA | 1024 × 768 |
+| `ov2640_regsV2.h` | `OV2640_1280x1024_JPEG` | SXGA | 1280 × 1024 |
+| `ov2640_regsV2.h` | `OV2640_1600x1200_JPEG` | UXGA | 1600 × 1200 |
+
+---
+
+# 10. Memory Usage
+
+Typical RAM usage when operating at **QQVGA (160×120)** resolution:
+
+| Component | RAM Usage |
+|----------|-----------|
+| JPEG buffer (`data`) | ~8–20 KB |
+| Grayscale buffer (`grey_image_buffer`) | 19.2 KB |
+| TJpgDec working buffer | 4 KB |
+| Image quality structure | ~32 bytes |
+| Camera driver state | < 64 bytes |
+
+**Approximate total RAM usage:**  
+`~32–45 KB`  
+
+Higher resolutions require increasing:
+
+- `MAX_IMAGE_SIZE`
+- `RESOLUTION_WIDTH`
+- `RESOLUTION_HEIGHT`
+- `grey_image_buffer`
+
+---
+
+# 11. Performance
+
+Typical processing times measured on **STM32F401RCT6**:
+
+| Stage | Approximate Time |
+|------|----------------|
+| Camera capture | 150 – 300 ms |
+| SPI image transfer | 50 – 150 ms |
+| JPEG decoding | 200 – 400 ms |
+| Image quality processing | < 5 ms |
+
+**Total processing time:** ~400 – 800 ms per captured image  
+
+---
+
+# 12. Enums
 
 ## `CameraStatus`
-
-Used for debugging and error reporting during camera configuration and image capture.
 
 | Value | Description |
 |------|-------------|
@@ -130,11 +256,7 @@ Used for debugging and error reporting during camera configuration and image cap
 | `CAMERA_ERROR_SPI` | SPI communication error |
 | `CAMERA_ERROR_TIMEOUT` | Operation timeout |
 
----
-
 ## `ImageStatus`
-
-Returned by `image_processing()` to indicate whether the captured image is suitable for transmission.
 
 | Value | Description |
 |------|-------------|
@@ -145,11 +267,7 @@ Returned by `image_processing()` to indicate whether the captured image is suita
 | `IMAGE_SATURATION_HIGH` | Too many overexposed pixels |
 | `IMAGE_SATURATION_LOW` | Too many underexposed pixels |
 
----
-
 ## `JpegStatus`
-
-Returned by `jpeg_decode()`.
 
 | Value | Description |
 |------|-------------|
@@ -159,21 +277,18 @@ Returned by `jpeg_decode()`.
 
 ---
 
-# 7. Code Flow
-
-For detailed information about individual functions, refer to the **header files**, which contain full documentation describing parameters and return values.
-
-An example implementation is provided in the **Example folder**, using an **STM32F401RCT6** with the **HAL driver library**.
+# 13. Code Flow
 
 <p align="center">
   <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Camera/CameraFlowDiagram.jpeg"
-    alt="Figure 2 shows the camera processing flow" width="1000">
+    alt="Camera processing flow" width="800">
 </p>
+
 <p align="center">Figure 2: Camera processing pipeline</p>
 
 ### Processing Pipeline
 
-1. Configure the OV2640 sensor over **I2C**
+1. Configure the OV2640 sensor via **I2C**
 2. Trigger image capture
 3. Read JPEG data from the **Arducam FIFO via SPI**
 4. Detect the **true JPEG length**
@@ -182,9 +297,7 @@ An example implementation is provided in the **Example folder**, using an **STM3
 
 ---
 
-# 8. Dependencies
-
-This driver requires:
+# 14. Dependencies
 
 - **STM32 HAL library**
 - **TJpgDec** lightweight JPEG decoder
@@ -192,39 +305,27 @@ This driver requires:
 
 ---
 
-# 9. Example Usage
-
-Typical capture pipeline:
+# 15. Example Usage
 
 ```c
+CameraTypeDef camera_pins = {
+    .port = GPIOB,
+    .pin = GPIO_PIN_9,
+    .i2c = &hi2c1,
+    .spi = &hspi1
+};
 
-  CameraTypeDef camera_pins ={
-	  .port = GPIOB,  //cs port
-	  .pin = GPIO_PIN_9,    //cs pin
+JpegInformation jpeg;
+ImageQualityInformation image_quality;
 
-	  .i2c = &hi2c1,
+upload_ov2640_settings(&camera_pins, OV2640_160x120_JPEG);
 
-	  .spi = &hspi1
+capture(&camera_pins);
 
+burst_read(&camera_pins, jpeg.data);
 
-  };
-capture(&camera);
-
-burst_read(&camera, jpeg.data);
-
-jpeg.size = true_length_of_jpeg(&camera, jpeg.data);
+jpeg.size = true_length_of_jpeg(&camera_pins, jpeg.data);
 
 jpeg_decode(&jpeg);
 
 image_processing(&jpeg, &image_quality);
-```
-
----
-
-# 10. Notes
-
-- The driver is designed for **low-power embedded systems**
-- JPEG decoding uses **grayscale output** to reduce RAM usage
-- Image quality filtering prevents **useless images from being transmitted**
-- Threshold values in `image_quality.h` can be tuned depending on the environment
-
