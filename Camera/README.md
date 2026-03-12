@@ -167,7 +167,7 @@ An example implementation is provided in the **Example folder**, using an **STM3
 
 <p align="center">
   <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Camera/CameraFlowDiagram.jpeg"
-    alt="Figure 2 shows the camera processing flow" width="400">
+    alt="Figure 2 shows the camera processing flow" width="1000">
 </p>
 <p align="center">Figure 2: Camera processing pipeline</p>
 
@@ -197,6 +197,17 @@ This driver requires:
 Typical capture pipeline:
 
 ```c
+
+  CameraTypeDef camera_pins ={
+	  .port = GPIOB,  //cs port
+	  .pin = GPIO_PIN_9,    //cs pin
+
+	  .i2c = &hi2c1,
+
+	  .spi = &hspi1
+
+
+  };
 capture(&camera);
 
 burst_read(&camera, jpeg.data);
@@ -216,3 +227,4 @@ image_processing(&jpeg, &image_quality);
 - JPEG decoding uses **grayscale output** to reduce RAM usage
 - Image quality filtering prevents **useless images from being transmitted**
 - Threshold values in `image_quality.h` can be tuned depending on the environment
+
