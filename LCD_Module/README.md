@@ -1,31 +1,55 @@
- LCD Module Driver (STM32)
+# LCD Module Driver (STM32)
+
+This library is based heavily on the **Waveshare Arduino LCD library**, but includes several modifications to make it more user-friendly and easier to integrate with STM32 projects.
+
+If you are looking for libraries for **Arduino, ESP32, or Raspberry Pi**, please refer to the official Waveshare documentation:
+
+https://www.waveshare.com/wiki/LCD1602_I2C_Module_(Blue)#C
+
+This LCD module supports **two lines of text** and multiple **font configurations**.
+This library uses the **5x8 dot font configuration by default**.
+
+To change the font configuration, edit the `function_set` macro bitmask inside the `.c` or `.cpp` source file.
+
+Relevant documentation for the LCD controller and bitmask configuration can be found below:
+
+* https://files.waveshare.com/wiki/LCD1602-I2C-Module/LCD1602_I2C_Module.pdf
+* https://files.waveshare.com/wiki/LCD1602-I2C-Module/AIP31068L.pdf
+
+---
 
 # 1. About
 
 This directory contains the driver used to interface with the **Waveshare LCD1602 I2C Module V2.0** for the buoy project.
 
-The GPS module allows the system to monitor the **location of the buoy**, which may change rapidly due to ocean currents or drifting ice. The GPS also provides an accurate **UTC time reference**, which is used to synchronize the buoy's internal timers and periodically poll environmental sensors.
-The LCD module allows for system verification of each subsystem of the buoy on start up to imediately idicate if there is a problem which would be vital on deployment of the protype. adititonally the LCD module is used for **Debuggin** which will be vital for intergration of every subsystem , espically 
-thoes that cannot be stepped through with the STM32IDE debugger tool such as the camera capture function.
+The LCD module allows verification of each subsystem during **system startup**. This enables immediate identification of faults, which is especially important when deploying the prototype in remote environments.
 
+Additionally, the LCD is used for **debugging**, which is essential during subsystem integration—particularly for components that cannot easily be stepped through using the **STM32CubeIDE debugger**, such as the camera capture subsystem.
 
 ---
 
 # 2. Part Information
 
-The LCD module used is the **Waveshare Blue 16x2 I2C LCD Module - 3.3V/5V with Backlight Controler**, which can be purchased using the link below.
+The LCD module used is the **Waveshare Blue 16x2 I2C LCD Module (3.3V/5V) with Backlight Controller**.
 
-**Product Links**
+The display is available with multiple backlight colours including **blue, green, and grey**.
 
-+ Waveshare Blue 16x2 I2C LCD Module - 3.3V/5V with Backlight Controle: https://thepihut.com/products/waveshare-blue-16x2-i2c-lcd-module-3-3v-5v-with-backlight-control
+### Product Links
 
+* Waveshare Blue 16x2 I2C LCD Module
+  https://thepihut.com/products/waveshare-blue-16x2-i2c-lcd-module-3-3v-5v-with-backlight-control
+
+* Waveshare Green 16x2 I2C LCD Module
+  https://thepihut.com/products/waveshare-green-16x2-i2c-lcd-module-3-3v-5v-with-backlight-control
+
+* Waveshare Grey 16x2 I2C LCD Module
+  https://thepihut.com/products/waveshare-grey-16x2-i2c-lcd-module-3-3v-5v-with-backlight-control
 
 <p align="center">
-  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/LCD_Module/LCD_Module_image.webp"
-    alt="Adafruit Ultimate GPS Module" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/LCD_Module/LCD_Module_image.webp" width="400">
 </p>
 
-<p align="center">Figure 1: Waveshare LCD Module</p>
+<p align="center"><b>Figure 1:</b> Waveshare LCD Module</p>
 
 ---
 
@@ -33,49 +57,45 @@ The LCD module used is the **Waveshare Blue 16x2 I2C LCD Module - 3.3V/5V with B
 
 This driver has been tested with:
 
-- **STM32F401RCT6**
-- **Adafruit Ultimate GPS Module**
+* **STM32F401RCT6**
+* **Waveshare LCD1602 I2C Module V2.0**
 
 ---
 
 # 4. Development Environment
 
-The driver was developed using the following environment:
-
-| Tool | Version |
-|-----|--------|
-| IDE | STM32CubeIDE |
-| Version | 2.0.0 |
-| Build | 26820_20251114_1348 |
-| Vendor | STMicroelectronics |
-| MCU | STM32F401RCT6 |
-| Firmware Library | STM32 HAL |
+| Tool             | Version             |
+| ---------------- | ------------------- |
+| IDE              | STM32CubeIDE        |
+| Version          | 2.0.0               |
+| Build            | 26820_20251114_1348 |
+| Vendor           | STMicroelectronics  |
+| MCU              | STM32F401RCT6       |
+| Firmware Library | STM32 HAL           |
 
 ---
 
 # 5. Hardware Connections
 
-The Adafruit Ultimate GPS module communicates with the STM32 using a **UART interface**.
+The LCD module communicates with the STM32 using an **I2C interface**.
 
-The module outputs **NMEA sentences** which contain information such as time, position, speed, and satellite status.
+## STM32 ↔ LCD Connections
 
-## STM32 ↔ GPS Connections
-
-| GPS Pin | STM32 Peripheral | Description |
-|-------|------|-------------|
-| VCC | 3.3V | Power supply |
-| GND | GND | Ground |
-| SCL | I2C_SCL | I2C clock used to configure AiP31068L |
-| SDA | I2C_SDA | I2C data line used for AiP31068L configuration |
+| LCD Pin | STM32 Peripheral | Description   |
+| ------- | ---------------- | ------------- |
+| VCC     | 3.3V / 5V        | Power supply  |
+| GND     | GND              | Ground        |
+| SCL     | I2C_SCL          | I2C clock     |
+| SDA     | I2C_SDA          | I2C data line |
 
 ---
 
 ## Example STM32F401 Pin Mapping
 
-| STM32 Pin | Peripheral | Function |
-|-----------|-----------|----------|
-| PB6 | I2C1_SCL | I2C clock |
-| PB7 | I2C1_SDA | I2C data |
+| STM32 Pin | Peripheral | Function  |
+| --------- | ---------- | --------- |
+| PB6       | I2C1_SCL   | I2C clock |
+| PB7       | I2C1_SDA   | I2C data  |
 
 ---
 
@@ -83,102 +103,113 @@ The module outputs **NMEA sentences** which contain information such as time, po
 
 ## Functions
 
-| Function                                          | Description                                                                |
-| ------------------------------------------------- | -------------------------------------------------------------------------- |
-| `LCD_I2C_WRITE_COMMAND(uint8_t function_byte)`    | Sends a command byte to the LCD via I2C.                                   |
-| `LCD_I2C_WRITE_DATA(uint8_t function_byte)`       | Sends a data byte (character) to the LCD via I2C.                          |
-| `I2C_WRITE_BACKLIGHT(uint8_t reg, uint8_t val)`   | Writes a value to a backlight controller register via I2C.                 |
-| `BACKLIGHT_INIT(void)`                            | Initializes the SN3193 backlight controller and sets default LED settings. |
-| `SET_BRIGHTNESS(uint8_t value)`                   | Sets backlight brightness (0–100%) using PWM.                              |
-| `SET_LED_MODE(uint8_t mode)`                      | Sets LED operation mode: steady (`0x00`) or breathing (`0x20`).            |
-| `DISPLAY(void)`                                   | Turns on the LCD display.                                                  |
-| `CLEAR(void)`                                     | Clears the LCD display and resets the cursor.                              |
-| `SET_CURSOR(uint8_t col, uint8_t row)`            | Moves the cursor to a specific column and row.                             |
-| `DATA(uint8_t value)`                             | Sends a single character to the LCD display.                               |
-| `SEND_STRING(const char *str)`                    | Sends a string to the LCD display.                                         |
-| `NOCURSOR(void)`                                  | Hides the cursor on the display.                                           |
-| `CURSOR(void)`                                    | Shows the cursor on the display.                                           |
-| `SCROLL_DISPLAY_LEFT(void)`                       | Scrolls the display content to the left.                                   |
-| `SCROLL_DISPLAY_RIGHT(void)`                      | Scrolls the display content to the right.                                  |
-| `LEFT_TO_RIGHT(void)`                             | Sets text direction to left-to-right.                                      |
-| `RIGHT_TO_LEFT(void)`                             | Sets text direction to right-to-left.                                      |
-| `NOAUTOSCROLL(void)`                              | Disables automatic text scrolling.                                         |
-| `AUTOSCROLL(void)`                                | Enables automatic text scrolling.                                          |
-| `CREATECHAR(uint8_t location, uint8_t charmap[])` | Creates a custom character at a CGRAM location (0–7).                      |
-| `LCD_INIT(void)`                                  | Initializes the LCD display, configures lines, cursor, and entry mode.     |
+> Note: The C++ implementation uses the same functions as the C API.
+> The only difference is that `lcd_startup(..)` is handled automatically by the **class constructor**.
+
+| Function                                             | Description                                                  |
+| ---------------------------------------------------- | ------------------------------------------------------------ |
+| `lcd_startup(I2C_HandleTypeDef *i2c_pin_assignment)` | Configures the LCD and backlight, and stores the I2C handle. |
+| `set_brightness(uint8_t value)`                      | Sets backlight brightness (0–100%).                          |
+| `set_led_mode(uint8_t mode)`                         | Sets LED mode: steady (`0x00`) or breathing (`0x20`).        |
+| `display_on(void)`                                   | Turns the LCD display on.                                    |
+| `display_off(void)`                                  | Turns the LCD display off.                                   |
+| `clear(void)`                                        | Clears the display and resets the cursor.                    |
+| `set_cursor(uint8_t col, uint8_t row)`               | Moves the cursor to a specific column and row.               |
+| `data(uint8_t value)`                                | Sends a single character to the display.                     |
+| `send_string(const char *str)`                       | Sends a string to the display.                               |
+| `no_cursor(void)`                                    | Hides the cursor.                                            |
+| `cursor(void)`                                       | Shows the cursor.                                            |
+| `scroll_display_left(void)`                          | Scrolls display left.                                        |
+| `scroll_display_right(void)`                         | Scrolls display right.                                       |
+| `left_to_right(void)`                                | Sets text direction left-to-right.                           |
+| `right_to_left(void)`                                | Sets text direction right-to-left.                           |
+| `no_autoscroll(void)`                                | Disables automatic scrolling.                                |
+| `autoscroll(void)`                                   | Enables automatic scrolling.                                 |
+| `create_char(uint8_t location, uint8_t charmap[])`   | Creates a custom character (CGRAM location 0–7).             |
 
 ---
 
+# 7. Enums
 
-# 8. Macros
+## `LCD_STATUS`
 
-| Header | Macro | Description |
-|--------|-------|-------------|
-| `WAVESHARE_LCD.H` | `LCD_ADDRESS` | I2C address of LCD (`0x3E << 1`) |
-| `WAVESHARE_LCD.H` | `LCD_LIGHT_ADDRESS` | I2C address of LCD backlight (`0x6B << 1`) |
+This enum is used for **error handling and debugging**.
 
-<!-- LCD Command Set -->
-| `WAVESHARE_LCD.H` | `LCD_CLEARDISPLAY` | Command to clear the display |
-| `WAVESHARE_LCD.H` | `LCD_RETURNHOME` | Command to return cursor to home position |
-| `WAVESHARE_LCD.H` | `LCD_ENTRYMODESET` | Command to set entry mode |
-| `WAVESHARE_LCD.H` | `LCD_DISPLAYCONTROL` | Command to control display settings |
-| `WAVESHARE_LCD.H` | `LCD_CURSORSHIFT` | Command to shift cursor or display |
-| `WAVESHARE_LCD.H` | `LCD_FUNCTIONSET` | Command to set function (like display mode) |
-| `WAVESHARE_LCD.H` | `LCD_SETCGRAMADDR` | Command to set CGRAM address |
-| `WAVESHARE_LCD.H` | `LCD_SETDDRAMADDR` | Command to set DDRAM address |
+| Value                              | Description                                                  |
+| ---------------------------------- | ------------------------------------------------------------ |
+| `LCD_OK`                           | Operation successful                                         |
+| `LCD_ERROR_I2C`                    | I2C communication failure when sending data or commands      |
+| `LCD_ERROR_I2C_REG`                | I2C communication failure during backlight configuration     |
+| `LCD_ERROR_FUNCTION_SET`           | Failed to configure LCD function settings (font, mode, etc.) |
+| `LCD_ERROR_DISPLAY_ON`             | Failed to enable the LCD display                             |
+| `LCD_ERROR_CLEAR_SCREEN`           | Failed to clear the display                                  |
+| `LCD_ERROR_ENTRY_MODE`             | Failed to configure cursor entry mode                        |
+| `LCD_ERROR_SETTING_BRIGHTNESS`     | Invalid brightness value passed to `set_brightness(..)`      |
+| `LCD_ERROR_SETTING_BACKLIGHT_MODE` | Invalid mode passed to backlight mode function               |
+| `LCD_ERROR_SENDING_STRING`         | Failed to send a string to the display                       |
+| `LCD_ERROR_CREATE_CHAR`            | Failed to upload custom character data                       |
+| `LCD_ERROR_BACKLIGHT_INIT`         | Backlight initialization failed (constructor check)          |
+| `LCD_ERROR_LCD_INIT`               | LCD initialization failed (constructor check)                |
 
-<!-- Entry Mode Flags -->
-| `WAVESHARE_LCD.H` | `LCD_ENTRYRIGHT` | Cursor moves right |
-| `WAVESHARE_LCD.H` | `LCD_ENTRYLEFT` | Cursor moves left |
-| `WAVESHARE_LCD.H` | `LCD_ENTRYSHIFTINCREMENT` | Shift display to the right automatically |
-| `WAVESHARE_LCD.H` | `LCD_ENTRYSHIFTDECREMENT` | Shift display to the left automatically |
+---
 
-<!-- Display Control Flags -->
-| `WAVESHARE_LCD.H` | `LCD_DISPLAYON` | Turn the display on |
-| `WAVESHARE_LCD.H` | `LCD_DISPLAYOFF` | Turn the display off |
-| `WAVESHARE_LCD.H` | `LCD_CURSORON` | Show the cursor |
-| `WAVESHARE_LCD.H` | `LCD_CURSOROFF` | Hide the cursor |
-| `WAVESHARE_LCD.H` | `LCD_BLINKON` | Blink the cursor |
-| `WAVESHARE_LCD.H` | `LCD_BLINKOFF` | Do not blink the cursor |
+# 13. Code Flow
 
-<!-- Cursor and Display Shift Flags -->
-| `WAVESHARE_LCD.H` | `LCD_DISPLAYMOVE` | Move the display |
-| `WAVESHARE_LCD.H` | `LCD_CURSORMOVE` | Move the cursor |
-| `WAVESHARE_LCD.H` | `LCD_MOVERIGHT` | Move display/cursor to the right |
-| `WAVESHARE_LCD.H` | `LCD_MOVELEFT` | Move display/cursor to the left |
+<p align="center">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/LCD_Module/LCD%20Flow%20Diagram.jpeg" width="800">
+</p>
 
-<!-- Function Set Flags -->
-| `WAVESHARE_LCD.H` | `LCD_8BITMODE` | Set 8-bit mode |
-| `WAVESHARE_LCD.H` | `LCD_4BITMODE` | Set 4-bit mode |
-| `WAVESHARE_LCD.H` | `LCD_2LINE` | Use 2 lines |
-| `WAVESHARE_LCD.H` | `LCD_1LINE` | Use 1 line |
-| `WAVESHARE_LCD.H` | `LCD_5X8DOTS` | Set 5x8 dots for characters |
+<p align="center"><b>Figure 2:</b> LCD Processing Pipeline</p>
 
-<!-- SN3193 LED Controller -->
-| `WAVESHARE_LCD.H` | `SN3193_IIC_ADDRESS` | I2C address of SN3193 backlight controller |
-| `WAVESHARE_LCD.H` | `SHUTDOWN_REG` | Software shutdown register |
-| `WAVESHARE_LCD.H` | `BREATHING_CONTROL_REG` | Breathing effect control register |
-| `WAVESHARE_LCD.H` | `LED_MODE_REG` | LED mode control register |
-| `WAVESHARE_LCD.H` | `LED_NORMAL_MODE` | Normal LED operation |
-| `WAVESHARE_LCD.H` | `LED_BREATH_MODE` | Breathing LED operation |
-| `WAVESHARE_LCD.H` | `CURRENT_SETTING_REG` | Set output current |
-| `WAVESHARE_LCD.H` | `PWM_1_REG` | PWM duty cycle for channel 1 |
-| `WAVESHARE_LCD.H` | `PWM_2_REG` | PWM duty cycle for channel 2 |
-| `WAVESHARE_LCD.H` | `PWM_3_REG` | PWM duty cycle for channel 3 |
-| `WAVESHARE_LCD.H` | `PWM_UPDATE_REG` | Load PWM settings |
-| `WAVESHARE_LCD.H` | `T0_1_REG` | Set T0 time for OUT1 |
-| `WAVESHARE_LCD.H` | `T0_2_REG` | Set T0 time for OUT2 |
-| `WAVESHARE_LCD.H` | `T0_3_REG` | Set T0 time for OUT3 |
-| `WAVESHARE_LCD.H` | `T1T2_1_REG` | Set T1&T2 time for OUT1 |
-| `WAVESHARE_LCD.H` | `T1T2_2_REG` | Set T1&T2 time for OUT2 |
-| `WAVESHARE_LCD.H` | `T1T2_3_REG` | Set T1&T2 time for OUT3 |
-| `WAVESHARE_LCD.H` | `T3T4_1_REG` | Set T3&T4 time for OUT1 |
-| `WAVESHARE_LCD.H` | `T3T4_2_REG` | Set T3&T4 time for OUT2 |
-| `WAVESHARE_LCD.H` | `T3T4_3_REG` | Set T3&T4 time for OUT3 |
-| `WAVESHARE_LCD.H` | `TIME_UPDATE_REG` | Load time registers |
-| `WAVESHARE_LCD.H` | `LED_CONTROL_REG` | Enable LED outputs OUT1~OUT3 |
-| `WAVESHARE_LCD.H` | `RESET_REG` | Reset all registers to default values |
+### Processing Pipeline
 
+This is the typical process used when writing text to the display.
 
+1. Configure the LCD backlight controller via **I2C**
+2. Configure the LCD controller via **I2C**
+3. Set the cursor position via **I2C**
+4. Send the string to the LCD via **I2C**
+5. Clear the display when needed
 
+For advanced features such as **scrolling animations or custom characters**, see the examples.
 
+---
+
+# 14. Dependencies
+
+* **STM32 HAL Library**
+* **STM32 I2C Peripheral**
+
+---
+
+# 15. Example Usage (C)
+
+```c
+lcd_startup(&hi2c1);
+
+// Set cursor to first row
+set_cursor(0, 0);
+send_string("Waveshare");
+
+// Set cursor to second row
+set_cursor(0, 1);
+send_string("Hello, World!");
+```
+
+---
+
+# 16. Example Usage (C++)
+
+```cpp
+WaveShareLCD lcd(&hi2c1);
+
+lcd.set_brightness(50);
+
+// First row
+lcd.set_cursor(0,0);
+lcd.send_string("Waveshare");
+
+// Second row
+lcd.set_cursor(0,1);
+lcd.send_string("Hello, World!");
+```
