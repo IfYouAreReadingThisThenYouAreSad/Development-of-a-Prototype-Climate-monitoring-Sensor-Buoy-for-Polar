@@ -32,7 +32,7 @@ static uint8_t mean(const JpegInformation *jpeg){
 	uint32_t x = 0;
 
 
-	for(uint32_t n = 0; n < jpeg->size; n++) x+= jpeg->data[n];
+	for(uint32_t n = 0; n < jpeg->size; n++) x+= jpeg->grey_image_buffer[n];
 
 	uint8_t x_bar = x/jpeg->size;
 
@@ -52,7 +52,7 @@ static float variance(const JpegInformation *jpeg, const uint8_t mean){
 
 	for(uint32_t i = 0; i < jpeg->size; i++){
 
-		int32_t diff = (int32_t)jpeg->data[i] - (int32_t)mean;
+		int32_t diff = (int32_t)jpeg->grey_image_buffer[i] - (int32_t)mean;
 		sum += diff*diff;
 
 
@@ -69,7 +69,7 @@ static uint32_t saturation_high(const JpegInformation *jpeg){
 	uint32_t saturation_high_temp = 0;
 
 	for(uint32_t i = 0; i < jpeg->size; i++){
-		if(jpeg->data[i] > PIXEL_OVEREXPOSURE_LIMIT) saturation_high_temp++;
+		if(jpeg->grey_image_buffer[i] > PIXEL_OVEREXPOSURE_LIMIT) saturation_high_temp++;
 	}
 	return saturation_high_temp;
 }
@@ -80,7 +80,7 @@ static uint32_t saturation_low(const JpegInformation *jpeg){
 	uint32_t saturation_low_temp = 0;
 
 	for(uint32_t i = 0; i < jpeg->size; i++){
-		if(jpeg->data[i] < PIXEL_UNDEREXPOSURE_LIMIT) saturation_low_temp++;
+		if(jpeg->grey_image_buffer[i] < PIXEL_UNDEREXPOSURE_LIMIT) saturation_low_temp++;
 	}
 	return saturation_low_temp;
 }
