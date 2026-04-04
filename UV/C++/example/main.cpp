@@ -46,10 +46,7 @@ COM_InitTypeDef BspCOMInit;
 
 I2C_HandleTypeDef hi2c1;
 
-/* USER CODE BEGIN PV */
-// The driver instance owns all sensor state (counts, UVI, window factor).
-// No sensor variables are needed here in main.
-static Ltr390Driver ltr390_sensor(&hi2c1, GPIOB, GPIO_PIN_9, GPIOB, GPIO_PIN_8);
+
 
 /* USER CODE END PV */
 
@@ -125,24 +122,23 @@ int main(void)
     Error_Handler();
   }
 
-  /* Infinite loop */
-   uint32_t debug_uv_counts  = 0;
-   uint32_t debug_als_counts = 0;
-   float    debug_uvi        = 0.0f;
-  Ltr390Status init_status = ltr390_sensor.begin();
-  /* USER CODE BEGIN WHILE */
+  Ltr390Driver ltr390_sensor(&hi2c1);
+
+  float debug_uv_index = 0.0f;
+  float debug_lux      = 0.0f;
+
+  Ltr390Status init_status = ltr390_sensor.init();
+  if (init_status != Ltr390Status::OK) {
+      Error_Handler();
+  }
+
   while (1)
   {
+      (void)ltr390_sensor.calculate_uv_index();
+      (void)ltr390_sensor.calculate_lux();
 
-      (void)ltr390_sensor.read_uvs_counts();
-      (void)ltr390_sensor.read_als_counts();
-      (void)ltr390_sensor.compute_uvi();
-
-
-
-      debug_uv_counts  = ltr390_sensor.get_uv_counts();
-      debug_als_counts = ltr390_sensor.get_als_counts();
-      debug_uvi        = ltr390_sensor.get_uvi();
+      debug_uv_index = ltr390_sensor.get_uv_index();
+      debug_lux      = ltr390_sensor.get_lux();
 
       BSP_LED_Toggle(LED_GREEN);
       HAL_Delay(500);
