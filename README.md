@@ -91,7 +91,7 @@ This structure is designed to make it easier for external users to:
 | Folder | Contents |
 |--------|----------|
 | `README` | This top-level overview of the project. |
-| `Main` | The integrated mother and daughter board projects (`main.c` for each), the GUI application, and their associated READMEs. |
+| `Intergration` | The integrated mother and daughter board projects (`main.c` for each), the GUI application, and their associated READMEs. |
 | `Sensors` | One folder per sensor/module, each containing its driver library and a README explaining its hardware, API, and usage. |
 | `Report` | The full project report and the project poster. |
 | `PCB` *(planned)* | PCB design files for the mother and daughter boards. This may be sent separately if it isn't ready in time for handover. |
