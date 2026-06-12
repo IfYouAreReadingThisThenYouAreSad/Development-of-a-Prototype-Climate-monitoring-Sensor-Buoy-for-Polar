@@ -7,13 +7,13 @@
 The USP of the buoy was that it can measure sea ice non-destructively, which no other buoy on the market does to date. An electromagnetic sensing system was custom made in order to do this, shown below in a testing photo. This works by driving a transmitter coil using a power amplifier with a high frequency changing voltage, which creates a magnetic field that then produces eddy currents in the sea water. These eddy currents create a magnetic field that opposes the magnetic field of the transmitter coil (Lenz's law). This secondary changing field is then picked up by the receiver coil, which allows us to infer sea ice thickness from the magnitude and in-phase response, as shown in Figure 2 below. (Note: a bucking coil of 1 turn was added to the system to stop any primary coupling between the transmitter (Tx) coil and receiver (Rx) coil, which is not shown on the explanation diagram below.)
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sea%20Ice%20Thickness%20(EMI)/EMI%20Process%20Diagram.png" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/Sea%20Ice%20Thickness%20(EMI)/EMI%20Process%20Diagram.png" width="400">
 </p>
 
 <p align="center"><b>Figure 1:</b> EMI interaction with seawater.</p>
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sea%20Ice%20Thickness%20(EMI)/EMI%20System%20Testing%20photo.png" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/Sea%20Ice%20Thickness%20(EMI)/EMI%20System%20Testing%20photo.png" width="400">
 </p>
 
 <p align="center"><b>Figure 2:</b> EMI system photo.</p>
@@ -21,19 +21,19 @@ The USP of the buoy was that it can measure sea ice non-destructively, which no 
 A custom EMI board was made for this, where a DAC signal and +15V/-15V rails are fed into the PCB. The DAC on the STM32F405RGT6 produces a 20 kHz, 1.2 V peak-to-peak signal, which is passed into the EMI PCB and then amplified up using a power amplifier and sent to the Tx coil, where the current is measured by a 1Ω shunt, as shown in Figure 3. The Rx coil is fed into the PCB, where parallel resistors and capacitors were added to help increase the sensitivity of the system. The bucking coil was also fed into the Rx header, going to the -Vin of the instrumentation amplifier to subtract the primary field coupling, as shown in Figure 4. Additionally, a 1.65V reference was created using the STM32F405RGT6's 3.3V ADC reference, through a potential divider and unity gain op-amp, to create a low impedance 1.65V reference and utilise the full range of the system's ADC, as shown in Figure 5.
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sea%20Ice%20Thickness%20(EMI)/Tx%20Drive%20Circuit.png" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/Sea%20Ice%20Thickness%20(EMI)/Tx%20Drive%20Circuit.png" width="400">
 </p>
 
 <p align="center"><b>Figure 3:</b> Power Amplifier (Tx Drive) and Shunt Circuit.</p>
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sea%20Ice%20Thickness%20(EMI)/RX%20and%20Bucking%20Circuit.png" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/Sea%20Ice%20Thickness%20(EMI)/RX%20and%20Bucking%20Circuit.png" width="400">
 </p>
 
 <p align="center"><b>Figure 4:</b> Rx Resonating and Bucking Subtraction Circuit.</p>
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sea%20Ice%20Thickness%20(EMI)/1.65V%20circuit.png" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/Sea%20Ice%20Thickness%20(EMI)/1.65V%20circuit.png" width="400">
 </p>
 
 <p align="center"><b>Figure 5:</b> 1.65V Reference Circuit.</p>
