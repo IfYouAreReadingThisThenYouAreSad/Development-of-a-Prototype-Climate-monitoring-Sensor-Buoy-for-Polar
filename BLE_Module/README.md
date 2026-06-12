@@ -11,7 +11,7 @@ The protocol is deliberately designed to match the **340-byte SBD message limit 
 The protocol layer consists of two files:
 
 - `protocol.h` / `protocol.c` — framing, CRC, and fragment transmission for the **MB → GUI** link (USART1)
-- `db_protocol.h` / `db_protocol.c` — an identical framing layer for the **MB → DB** inter-board link (USART6/USART2); see [Section 10](#10-inter-board-link-differences) for differences
+- `db_protocol.h` / `db_protocol.c` — an identical framing layer for the **MB → DB** inter-board link (USART6/USART2); see [Section 11](#11-inter-board-link-differences) for differences
 
 ---
 
