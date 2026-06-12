@@ -34,7 +34,7 @@ To use the external antenna, a **uFL to SMA adapter** is required.
 + Antenna Adapter: https://www.adafruit.com/product/851
 
 <p align="center">
-  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/GPS_Module/UltimateGPS.jpg"
+  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/GPS_Module/UltimateGPS.jpg"
     alt="Adafruit Ultimate GPS Module" width="400">
 </p>
 
@@ -174,7 +174,7 @@ For detailed information about individual functions, refer to the **header files
 An example implementation is provided in the **Example folder**, using an **STM32F401RCT6** with the **HAL driver library**.
 
 <p align="center">
-  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/GPS_Module/GPS%20Flow%20diagam.jpeg"
+  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/GPS_Module/GPS%20Flow%20diagam.jpeg"
     alt="GPS processing flow diagram" width="400">
 </p>
 
