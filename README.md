@@ -31,7 +31,7 @@ The buoy contains sensors that help measure essential climate variables and the 
 The image below shows the buoy's sensors and their locations.
 
 <p align="center">
-  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/CAD%20Assembly%20of%20Buoy.png"
+  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/images/CAD%20Assembly%20of%20Buoy.png"
     alt="Figure 1 shows CAD View of Buoy" width="900">
 </p>
 <p align="center">Figure 1: CAD view of the buoy</p>
@@ -47,7 +47,7 @@ The buoy has a rotating side, where a rotating I-beam is used to ensure proper o
 For both sides to work, two PCBs (shown below) were made, connected through a slip ring. The daughter board digitises the data on the static side and adds a checksum. The mother PCB then reads this data and sends it via satellite. This is a very brief explanation — for more detail, please read the attached report in this repository.
 
 <p align="center">
-  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/Mother%20and%20Daughter%20Board.png"
+  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/images/Mother%20and%20Daughter%20Board.png"
     alt="Figure 2 shows the Mother and Daughter board" width="900">
 </p>
 <p align="center">Figure 2: Mother and daughter boards</p>
@@ -59,7 +59,7 @@ For both sides to work, two PCBs (shown below) were made, connected through a sl
 A GUI was designed to interact with the system. This allows for monitoring of the buoy and for manual requests of data. In this prototype, data must be requested manually, but in the real system data will be sent periodically, with the frequency changing depending on whether the buoy is on ice, in water, or on land. The GUI in the real design will still allow specific data to be requested, but will also allow monitoring of the health, position, and data of multiple buoys. An image of the GUI is shown below.
 
 <p align="center">
-  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/GUI%20Screenshot.png"
+  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/images/GUI%20Screenshot.png"
     alt="Figure 3 shows GUI Interface" width="900">
 </p>
 <p align="center">Figure 3: GUI interface</p>
@@ -69,7 +69,7 @@ A GUI was designed to interact with the system. This allows for monitoring of th
 # 5.0 System Architecture
 
 <p align="center">
-  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/images/System%20Architecture.png"
+  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/images/System%20Architecture.png"
     alt="Figure 4 shows simplified System Architecture of Buoy" width="900">
 </p>
 <p align="center">Figure 4: Simplified system architecture of the buoy</p>
@@ -93,8 +93,8 @@ This structure is designed to make it easier for external users to:
 | `README` | This top-level overview of the project. |
 | `Intergration` | The integrated mother and daughter board projects (`main.c` for each), the GUI application, and their associated READMEs. |
 | `Sensors` | One folder per sensor/module, each containing its driver library and a README explaining its hardware, API, and usage. |
-| `Report` | The full project report and the project poster. |
-| `PCB` *(planned)* | PCB design files for the mother and daughter boards. This may be sent separately if it isn't ready in time for handover. |
+| `Report and Other Information` | The full project report and the project poster. |
+| `PCB` | PCB design files for the mother and daughter boards. This may be sent separately if it isn't ready in time for handover. |
 
 ---
 
