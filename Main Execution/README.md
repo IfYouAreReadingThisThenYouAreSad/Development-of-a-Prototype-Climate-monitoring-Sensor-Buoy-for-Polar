@@ -41,6 +41,6 @@ pip3 install bleak Pillow tkintermapview matplotlib
 python3 run.py
 ```
 
-See [`GUIV3/README.md`](GUIV3/README.md) for full setup instructions, file layout, and GUI feature reference.
+See [`GUI/README.md`](GUI/README.md) for full setup instructions, file layout, and GUI feature reference.
 
 To flash firmware, open either the `Motherboard/` or `Daughterboard/` project in **STM32CubeIDE** and flash via ST-Link.
