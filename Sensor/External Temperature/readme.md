@@ -9,7 +9,7 @@ A custom made external temperature sensor was made for the buoy that allowed 360
 The sensor itself used a PS103J2 thermistor. This was then placed inside a hollowed out coach bolt. The bolt was then filled with thermal paste to maximise thermal transfer between the bolt and the thermistor, and the thermistor was then fixed in place with resin and heatshrink. A diagram of this is shown below.
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/External%20Temperature/2D%20View%20External%20Temperature%20Sensor.png" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/External%20Temperature/2D%20View%20External%20Temperature%20Sensor.png" width="400">
 </p>
 
 <p align="center"><b>Figure 1:</b> 2D View of Custom Made External Temperature Sensor.</p>
@@ -17,7 +17,7 @@ The sensor itself used a PS103J2 thermistor. This was then placed inside a hollo
 The thermistors were connected to small JST connectors (1.25mm). These small connectors allowed a nut to easily pass each temperature sensor, allowing it to be secured to the buoy. Each sensor (4 in total) then plugged into a custom made Donut Temperature PCB shown below. This allowed all of them to combine onto one header, so one wire could go from the Donut PCB to the daughterboard to read all the external temperature sensors. This helped reduce wiring in the buoy and supported the buoy design philosophy of allowing every external temperature sensor to be modular and easy to assemble.
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/External%20Temperature/Temperature%20Donut.JPG" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/External%20Temperature/Temperature%20Donut.JPG" width="400">
 </p>
 
 <p align="center"><b>Figure 2:</b> Custom made Temperature PCB</p>
@@ -25,7 +25,7 @@ The thermistors were connected to small JST connectors (1.25mm). These small con
 3.3V from the Donut PCB goes into the thermistors. Each thermistor then connects to the simplified circuit below, which is on the daughter PCB. 3.3V goes into the thermistor, which forms a potential divider with a 15kΩ resistor and 100nF capacitor; this is then fed into an ADC channel on the STM32 as shown in the simplified diagram below.
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/External%20Temperature/temp_filter_no_buffer.png" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/External%20Temperature/temp_filter_no_buffer.png" width="400">
 </p>
 
 <p align="center"><b>Figure 3:</b> Simplified Thermistor Circuit.</p>
@@ -45,7 +45,7 @@ https://www.digikey.co.uk/en/products/detail/littelfuse-inc/ps103j2/1014531
 https://www.littelfuse.com/assetdocs/littelfuse-leaded-thermistors-standard-precision-ps-datasheet?assetguid=f2c5cde0-806d-4632-bdd3-5e56183e2fd4
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/External%20Temperature/PS104J2_sml.jpg" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/External%20Temperature/PS104J2_sml.jpg" width="400">
 </p>
 
 <p align="center"><b>Figure 4:</b> PS103J2 NTC Thermistor</p>
@@ -61,7 +61,7 @@ For this project, one ADC channel was used to get around the channel shortage. E
 A screenshot of how 2 instances of the same ADC channel are set up is shown below. Note this image was taken before the code and system were all switched to 1 ADC channel with 4 instances, but you just keep adding ranks in the settings in the same way.
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/External%20Temperature/CubeMx%20ADC%20Set%20Up.jpeg" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/External%20Temperature/CubeMx%20ADC%20Set%20Up.jpeg" width="400">
 </p>
 
 <p align="center"><b>Figure 5:</b> ADC Setup</p>
