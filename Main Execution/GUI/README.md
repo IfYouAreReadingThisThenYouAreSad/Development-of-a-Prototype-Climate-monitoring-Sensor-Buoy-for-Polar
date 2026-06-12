@@ -141,7 +141,7 @@ Bit   GUI metric(s)                     Format   Bytes   Notes
 23    STANDBY_MASK (0x800000)             –         –     keep-alive when mask = 0
 ```
 
-Sensor fields are packed in the order they appear in `SENSORS` (ble_manager.py), lowest set bit first. Sensors sharing a bit (e.g. UV+Lux on bit 0, Battery trio on bit 5) are consecutive entries in `SENSORS` and are decoded by reading sequentially. Cameras (bits 1, 2) are not in `SENSORS` — they arrive as separate JPEG streams and are handled by `_handle_image_payload`.
+Sensor fields are packed in the order they appear in `SENSORS` (ble_manager.py), lowest set bit first. Sensors sharing a bit (e.g. UV+Lux on bit 0, Battery trio on bit 5) are consecutive entries in `SENSORS` and are decoded by reading sequentially. Cameras (bits 1, 2) are not in `SENSORS`, they arrive as separate JPEG streams and are handled by `_handle_image_payload`.
 
 ---
 
