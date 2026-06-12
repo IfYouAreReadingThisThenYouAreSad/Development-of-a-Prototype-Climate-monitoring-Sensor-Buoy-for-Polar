@@ -46,7 +46,7 @@ The display is available with multiple backlight colours including **blue, green
   https://thepihut.com/products/waveshare-grey-16x2-i2c-lcd-module-3-3v-5v-with-backlight-control
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/LCD_Module/LCD_Module_image.webp" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/LCD_Module/LCD_Module_image.webp" width="400">
 </p>
 
 <p align="center"><b>Figure 1:</b> Waveshare LCD Module</p>
@@ -156,7 +156,7 @@ This enum is used for **error handling and debugging**.
 # 13. Code Flow
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/LCD_Module/LCD%20Flow%20Diagram.jpeg" width="800">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/LCD_Module/LCD%20Flow%20Diagram.jpeg" width="800">
 </p>
 
 <p align="center"><b>Figure 2:</b> LCD Processing Pipeline</p>
