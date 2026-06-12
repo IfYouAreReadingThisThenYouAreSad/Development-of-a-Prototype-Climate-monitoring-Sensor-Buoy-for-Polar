@@ -29,7 +29,7 @@ The system uses the:
 https://www.adafruit.com/product/904
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/BatteryMonitor_Module/ina219-high-side-dc-current-sensor-breakout-26v-3-2a-max-stemma-qt-adafruit-ada904-28609974796483_1000x.jpg" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/BatteryMonitor_Module/ina219-high-side-dc-current-sensor-breakout-26v-3-2a-max-stemma-qt-adafruit-ada904-28609974796483_1000x.jpg" width="400">
 </p>
 
 <p align="center"><b>Figure 1:</b> INA219 Current Sensor Module</p>
@@ -103,7 +103,7 @@ Used for error handling and debugging.
 # 6. Code Flow
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/BatteryMonitor_Module/INA219%20Diagram.jpeg" width="800">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/BatteryMonitor_Module/INA219%20Diagram.jpeg" width="800">
 </p>
 
 <p align="center"><b>Figure 2:</b> INA219 Processing Pipeline</p>
