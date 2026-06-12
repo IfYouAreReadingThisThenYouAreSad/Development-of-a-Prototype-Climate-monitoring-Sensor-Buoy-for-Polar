@@ -5,9 +5,9 @@
  *   2. Add init/read adapter functions and a Sensor const below.
  *   3. Add a pointer to REGISTRY[] in ascending bit order.
  */
-#include "main.h"    // for hi2c1
-#include <cstring>   // for memcpy
-#include <stdint.h>  // for uint8_t, uint16_t, uint32_t
+#include "main.h" 
+#include <cstring> 
+#include <stdint.h>  
 #include <stddef.h>
 #include "sensor_registry.h"
 #include "sensor.h"
