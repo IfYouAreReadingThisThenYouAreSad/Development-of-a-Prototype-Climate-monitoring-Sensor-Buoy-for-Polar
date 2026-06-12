@@ -1,6 +1,6 @@
 # ArcticSense
 
-A prototype autonomous climate-monitoring sensor buoy designed for polar deployment. The system collects Essential Climate Variables — including ocean temperature, turbidity, salinity, UV radiation, and electromagnetic interference — and transmits them remotely to a ground-station GUI.
+A prototype autonomous climate-monitoring sensor buoy designed for polar deployment. The system collects Essential Climate Variables such as sea ice thickness, ocean temperature, turbidity, salinity, and UV radiation, then transmits them remotely to a ground-station GUI.
 
 Developed as a final-year engineering project in partnership with the **British Antarctic Survey**.
 
@@ -25,7 +25,7 @@ Ground Station (Python GUI)
 └─────────────────────────────────────┘
 ```
 
-The **Motherboard (MB)** receives commands from the GUI, forwards the request to the **Daughterboard (DB)**, reads its own sensors, assembles the combined payload, and returns it to the GUI as 20-byte fragments. The DB is a silent slave — it never initiates communication.
+The **Motherboard (MB)** receives commands from the GUI, forwards the request to the **Daughterboard (DB)**, reads its own sensors, assembles the combined payload, and returns it to the GUI as 20-byte fragments. The DB is a silent slave, it never initiates communication.
 
 The **HM-10 BLE module** is a development stand-in for the target **Iridium 9603N** satellite modem. The 20-byte fragment size and 5-byte command frame were chosen to fit within the Iridium SBD 340-byte message limit, so migrating to satellite requires only a transport-layer swap.
 
