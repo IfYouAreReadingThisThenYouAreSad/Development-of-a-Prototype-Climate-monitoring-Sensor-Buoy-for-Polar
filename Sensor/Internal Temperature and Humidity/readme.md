@@ -28,7 +28,7 @@ The system uses the:
 https://thepihut.com/products/adafruit-sensirion-sht45-precision-temperature-humidity-sensor-stemma-qt-qwiic
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Internal%20Temperature%20and%20Humidity/adafruit-sensirion-sht45-precision-temperature-humidity-sensor-stemma-qt-qwiic-the-pi-hut-ada5665-40059654996163_900x.jpg" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/Internal%20Temperature%20and%20Humidity/adafruit-sensirion-sht45-precision-temperature-humidity-sensor-stemma-qt-qwiic-the-pi-hut-ada5665-40059654996163_900x.jpg" width="400">
 </p>
 
 <p align="center"><b>Figure 1:</b> SHT45 Precision Temperature & Humidity Sensor</p>
