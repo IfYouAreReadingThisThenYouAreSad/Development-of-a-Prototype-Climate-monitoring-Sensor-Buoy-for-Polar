@@ -27,7 +27,7 @@ The implementation supports:
 This project uses the **Arducam Mini 2MP SPI Camera Module with OV2640 sensor**.
 
 <p align="center">
-  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Camera/ArducamPhoto.jpg"
+  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/Camera/ArducamPhoto.jpg"
     alt="Arducam camera module" width="400">
 </p>
 
@@ -280,7 +280,7 @@ Typical processing times measured on **STM32F401RCT6**:
 # 13. Code Flow
 
 <p align="center">
-  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Camera/CameraFlowDiagram.jpeg"
+  <img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/Camera/CameraFlowDiagram.jpeg"
     alt="Camera processing flow" width="800">
 </p>
 
