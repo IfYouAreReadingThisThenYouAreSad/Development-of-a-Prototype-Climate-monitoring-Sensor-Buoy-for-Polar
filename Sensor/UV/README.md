@@ -28,7 +28,7 @@ The system uses the:
 https://thepihut.com/products/digital-ltr390-uv-ultraviolet-sensor
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/UV/digital-ltr390-uv-ultraviolet-sensor-waveshare-wav-20467-41114641662147_1000x.webp" width="400">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/UV/digital-ltr390-uv-ultraviolet-sensor-waveshare-wav-20467-41114641662147_1000x.webp" width="400">
 </p>
 
 <p align="center"><b>Figure 1:</b> UV Sensor Module</p>
@@ -121,7 +121,7 @@ Returned by all driver functions for error handling and debugging.
 # 6. Code Flow
 
 <p align="center">
-<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/UV/UV%20Sensor%20block%20diagram.jpeg" width="800">
+<img src="https://github.com/IfYouAreReadingThisThenYouAreSad/Development-of-a-Prototype-Climate-monitoring-Sensor-Buoy-for-Polar/blob/main/Sensor/UV/UV%20Sensor%20block%20diagram.jpeg" width="800">
 </p>
 
 <p align="center"><b>Figure 2:</b> LTR390 Processing Pipeline for Calculating UV Index and Lux</p>
